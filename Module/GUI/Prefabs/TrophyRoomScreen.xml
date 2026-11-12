@@ -1,0 +1,162 @@
+<Prefab>
+  <!-- Trophy room screen: weapons on the left and right, armour mannequin in the centre, item picker overlay. -->
+  <Window>
+    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="InventoryBackground">
+      <Children>
+
+        <!-- Title -->
+        <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="60" VerticalAlignment="Top" MarginTop="30" Brush="InventoryHeaderFontBrush" Brush.FontSize="40" Brush.TextHorizontalAlignment="Center" Text="@TitleText" />
+
+        <!-- Armour mannequin -->
+        <CharacterTableauWidget DataSource="{Mannequin}" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="760" SuggestedHeight="760" HorizontalAlignment="Center" VerticalAlignment="Center" PositionYOffset="-90" BannerCodeText="@BannerCodeText" CharStringId="@CharStringId" EquipmentCode="@EquipmentCode" BodyProperties="@BodyProperties" IsFemale="@IsFemale" MountCreationKey="@MountCreationKey" StanceIndex="@StanceIndex" ArmorColor1="@ArmorColor1" ArmorColor2="@ArmorColor2" Race="@Race" IsEquipmentAnimActive="true" DoNotUseCustomScale="true" />
+
+        <!-- Left weapon wall -->
+        <ListPanel DataSource="{LeftWeapons}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" MarginLeft="90" PositionYOffset="-40" StackLayout.LayoutMethod="VerticalTopToBottom">
+          <ItemTemplate>
+            <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="360" SuggestedHeight="100" MarginTop="8" MarginBottom="8">
+              <Children>
+                <ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="Standard.DropdownItem.SoundBrush" Command.Click="ExecuteSelect" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint">
+                  <Children>
+                    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="BlankWhiteSquare_9" Color="#000000A0" />
+                    <ImageWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="Standard.DropdownItem" />
+                    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="BlankWhiteSquare_9" Color="#F4E1C440" IsVisible="@IsSelected" />
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="150" SuggestedHeight="75" HorizontalAlignment="Left" VerticalAlignment="Center" MarginLeft="12" Sprite="Inventory\portrait_cart">
+                      <Children>
+                        <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" IsVisible="@HasItem">
+                          <Children>
+                            <ImageIdentifierWidget DataSource="{ImageIdentifier}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="3" MarginRight="4" MarginTop="3" MarginBottom="4" ImageId="@Id" AdditionalArgs="@AdditionalArgs" TextureProviderName="@TextureProviderName" />
+                          </Children>
+                        </Widget>
+                      </Children>
+                    </Widget>
+                    <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="175" MarginRight="40" Brush="InventoryHeaderFontBrush" Brush.FontSize="20" Text="@NameText" IsVisible="@HasItem" />
+                    <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="175" MarginRight="40" Brush="InventoryDefaultFontBrush" Brush.FontSize="20" Brush.AlphaFactor="0.6" Text="@SlotLabel" IsHidden="@HasItem" />
+                  </Children>
+                </ButtonWidget>
+                <ButtonWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="28" SuggestedHeight="28" HorizontalAlignment="Right" VerticalAlignment="Top" MarginTop="6" MarginRight="6" Brush="Popup.CloseButton" Command.Click="ExecuteClear" IsVisible="@HasItem" />
+              </Children>
+            </Widget>
+          </ItemTemplate>
+        </ListPanel>
+
+        <!-- Right weapon wall -->
+        <ListPanel DataSource="{RightWeapons}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" MarginRight="90" PositionYOffset="-40" StackLayout.LayoutMethod="VerticalTopToBottom">
+          <ItemTemplate>
+            <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="360" SuggestedHeight="100" MarginTop="8" MarginBottom="8">
+              <Children>
+                <ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="Standard.DropdownItem.SoundBrush" Command.Click="ExecuteSelect" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint">
+                  <Children>
+                    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="BlankWhiteSquare_9" Color="#000000A0" />
+                    <ImageWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="Standard.DropdownItem" />
+                    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="BlankWhiteSquare_9" Color="#F4E1C440" IsVisible="@IsSelected" />
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="150" SuggestedHeight="75" HorizontalAlignment="Right" VerticalAlignment="Center" MarginRight="12" Sprite="Inventory\portrait_cart">
+                      <Children>
+                        <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" IsVisible="@HasItem">
+                          <Children>
+                            <ImageIdentifierWidget DataSource="{ImageIdentifier}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="3" MarginRight="4" MarginTop="3" MarginBottom="4" ImageId="@Id" AdditionalArgs="@AdditionalArgs" TextureProviderName="@TextureProviderName" />
+                          </Children>
+                        </Widget>
+                      </Children>
+                    </Widget>
+                    <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="40" MarginRight="175" Brush="InventoryHeaderFontBrush" Brush.FontSize="20" Brush.TextHorizontalAlignment="Right" Text="@NameText" IsVisible="@HasItem" />
+                    <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="40" MarginRight="175" Brush="InventoryDefaultFontBrush" Brush.FontSize="20" Brush.AlphaFactor="0.6" Brush.TextHorizontalAlignment="Right" Text="@SlotLabel" IsHidden="@HasItem" />
+                  </Children>
+                </ButtonWidget>
+                <ButtonWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="28" SuggestedHeight="28" HorizontalAlignment="Left" VerticalAlignment="Top" MarginTop="6" MarginLeft="6" Brush="Popup.CloseButton" Command.Click="ExecuteClear" IsVisible="@HasItem" />
+              </Children>
+            </Widget>
+          </ItemTemplate>
+        </ListPanel>
+
+        <!-- Armour slots under the mannequin -->
+        <ListPanel DataSource="{ArmourSlots}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Bottom" MarginBottom="140" StackLayout.LayoutMethod="HorizontalLeftToRight">
+          <ItemTemplate>
+            <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="170" SuggestedHeight="120" MarginLeft="6" MarginRight="6">
+              <Children>
+                <ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="Standard.DropdownItem.SoundBrush" Command.Click="ExecuteSelect" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint">
+                  <Children>
+                    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="BlankWhiteSquare_9" Color="#000000A0" />
+                    <ImageWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="Standard.DropdownItem" />
+                    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="BlankWhiteSquare_9" Color="#F4E1C440" IsVisible="@IsSelected" />
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="140" SuggestedHeight="70" HorizontalAlignment="Center" VerticalAlignment="Top" MarginTop="10" Sprite="Inventory\portrait_cart">
+                      <Children>
+                        <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" IsVisible="@HasItem">
+                          <Children>
+                            <ImageIdentifierWidget DataSource="{ImageIdentifier}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="3" MarginRight="4" MarginTop="3" MarginBottom="4" ImageId="@Id" AdditionalArgs="@AdditionalArgs" TextureProviderName="@TextureProviderName" />
+                          </Children>
+                        </Widget>
+                      </Children>
+                    </Widget>
+                    <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="30" VerticalAlignment="Bottom" MarginBottom="6" Brush="InventoryDefaultFontBrush" Brush.FontSize="18" Brush.TextHorizontalAlignment="Center" Text="@SlotLabel" />
+                  </Children>
+                </ButtonWidget>
+                <ButtonWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="24" SuggestedHeight="24" HorizontalAlignment="Right" VerticalAlignment="Top" MarginTop="4" MarginRight="4" Brush="Popup.CloseButton" Command.Click="ExecuteClear" IsVisible="@HasItem" />
+              </Children>
+            </Widget>
+          </ItemTemplate>
+        </ListPanel>
+
+        <!-- Done / Cancel -->
+        <Standard.DialogCloseButtons Parameter.CancelButtonAction="ExecuteCancel" Parameter.CancelButtonText="@CancelText" Parameter.DoneButtonAction="ExecuteDone" Parameter.DoneButtonText="@DoneText" Parameter.DoneInputKeyDataSource="{DoneInputKey}" Parameter.CancelInputKeyDataSource="{CancelInputKey}" />
+
+        <!-- Item picker overlay -->
+        <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" IsVisible="@IsPickerOpen">
+          <Children>
+            <ButtonWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="Standard.DropdownItem.SoundBrush" Command.Click="ExecuteClosePicker">
+              <Children>
+                <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="BlankWhiteSquare_9" Color="#000000B4" DoNotAcceptEvents="true" />
+              </Children>
+            </ButtonWidget>
+
+            <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="720" SuggestedHeight="820" HorizontalAlignment="Center" VerticalAlignment="Center" Sprite="BlankWhiteSquare_9" Color="#17120EF8">
+              <Children>
+                <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="2" VerticalAlignment="Top" MarginTop="75" MarginLeft="20" MarginRight="20" Sprite="BlankWhiteSquare_9" Color="#F4E1C460" />
+                <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="50" VerticalAlignment="Top" MarginTop="18" MarginLeft="60" MarginRight="60" Brush="InventoryHeaderFontBrush" Brush.FontSize="28" Brush.TextHorizontalAlignment="Center" Text="@PickerTitleText" />
+                <ButtonWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="36" SuggestedHeight="36" HorizontalAlignment="Right" VerticalAlignment="Top" MarginTop="20" MarginRight="20" Brush="Popup.CloseButton" Command.Click="ExecuteClosePicker" />
+                <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="40" VerticalAlignment="Center" MarginLeft="40" MarginRight="40" Brush="InventoryDefaultFontBrush" Brush.FontSize="22" Brush.TextHorizontalAlignment="Center" Text="@NoCandidatesText" IsVisible="@HasNoCandidates" />
+
+                <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginTop="90" MarginBottom="20" MarginLeft="20" MarginRight="20">
+                  <Children>
+                    <ScrollablePanel Id="ScrollablePanel" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginRight="20" AutoHideScrollBars="true" ClipRect="ClipRect" InnerPanel="ClipRect\CandidateList" VerticalScrollbar="..\VerticalScrollbar">
+                      <Children>
+                        <Widget Id="ClipRect" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" ClipContents="true">
+                          <Children>
+                            <ListPanel Id="CandidateList" DataSource="{Candidates}" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" VerticalAlignment="Top" StackLayout.LayoutMethod="VerticalTopToBottom">
+                              <ItemTemplate>
+                                <ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="90" MarginBottom="6" Brush="Standard.DropdownItem.SoundBrush" Command.Click="ExecuteSelect" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint">
+                                  <Children>
+                                    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="BlankWhiteSquare_9" Color="#00000070" />
+                                    <ImageWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="Standard.DropdownItem" />
+                                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="140" SuggestedHeight="70" HorizontalAlignment="Left" VerticalAlignment="Center" MarginLeft="10" Sprite="Inventory\portrait_cart">
+                                      <Children>
+                                        <ImageIdentifierWidget DataSource="{ImageIdentifier}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="3" MarginRight="4" MarginTop="3" MarginBottom="4" ImageId="@Id" AdditionalArgs="@AdditionalArgs" TextureProviderName="@TextureProviderName" />
+                                      </Children>
+                                    </Widget>
+                                    <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="40" VerticalAlignment="Top" MarginTop="10" MarginLeft="170" MarginRight="10" Brush="InventoryHeaderFontBrush" Brush.FontSize="20" Text="@NameText" />
+                                    <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="30" VerticalAlignment="Bottom" MarginBottom="10" MarginLeft="170" MarginRight="10" Brush="InventoryDefaultFontBrush" Brush.FontSize="16" Brush.AlphaFactor="0.7" Text="@SourceText" />
+                                  </Children>
+                                </ButtonWidget>
+                              </ItemTemplate>
+                            </ListPanel>
+                          </Children>
+                        </Widget>
+                      </Children>
+                    </ScrollablePanel>
+
+                    <ScrollbarWidget Id="VerticalScrollbar" WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="8" HorizontalAlignment="Right" VerticalAlignment="Top" AlignmentAxis="Vertical" Handle="VerticalScrollbarHandle" MaxValue="100" MinValue="0">
+                      <Children>
+                        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="2" HorizontalAlignment="Center" Sprite="BlankWhiteSquare_9" Color="#5a4033FF" AlphaFactor="0.2" />
+                        <ImageWidget Id="VerticalScrollbarHandle" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedHeight="10" SuggestedWidth="4" HorizontalAlignment="Center" Brush="FaceGen.Scrollbar.Handle" Brush.AlphaFactor="0.7" />
+                      </Children>
+                    </ScrollbarWidget>
+                  </Children>
+                </Widget>
+              </Children>
+            </Widget>
+          </Children>
+        </Widget>
+
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

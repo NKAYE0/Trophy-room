@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <AssemblyName>TrophyRoom</AssemblyName>
+    <RootNamespace>TrophyRoom</RootNamespace>
+    <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <GameFolder Condition="'$(GameFolder)' == ''">D:\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord</GameFolder>
+    <GameBin>$(GameFolder)\bin\Win64_Shipping_Client</GameBin>
+    <ModuleId>TrophyRoom</ModuleId>
+    <ModuleOutput>$(GameFolder)\Modules\$(ModuleId)</ModuleOutput>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="$(GameBin)\TaleWorlds.CampaignSystem.dll" Private="false" />
+    <Reference Include="$(GameBin)\TaleWorlds.Core.dll" Private="false" />
+    <Reference Include="$(GameBin)\TaleWorlds.Library.dll" Private="false" />
+    <Reference Include="$(GameBin)\TaleWorlds.Localization.dll" Private="false" />
+    <Reference Include="$(GameBin)\TaleWorlds.MountAndBlade.dll" Private="false" />
+    <Reference Include="$(GameBin)\TaleWorlds.ObjectSystem.dll" Private="false" />
+    <Reference Include="$(GameBin)\TaleWorlds.Core.ViewModelCollection.dll" Private="false" />
+    <Reference Include="$(GameBin)\TaleWorlds.CampaignSystem.ViewModelCollection.dll" Private="false" />
+    <Reference Include="$(GameBin)\TaleWorlds.Engine.dll" Private="false" />
+    <Reference Include="$(GameBin)\TaleWorlds.Engine.GauntletUI.dll" Private="false" />
+    <Reference Include="$(GameBin)\TaleWorlds.GauntletUI.dll" Private="false" />
+    <Reference Include="$(GameBin)\TaleWorlds.GauntletUI.Data.dll" Private="false" />
+    <Reference Include="$(GameBin)\TaleWorlds.InputSystem.dll" Private="false" />
+    <Reference Include="$(GameBin)\TaleWorlds.ScreenSystem.dll" Private="false" />
+    <Reference Include="$(GameBin)\TaleWorlds.TwoDimension.dll" Private="false" />
+    <Reference Include="$(GameFolder)\Modules\Native\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.View.dll" Private="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ModuleGuiFiles Include="$(ProjectDir)..\..\Module\GUI\**\*.*" />
+  </ItemGroup>
+
+  <!-- Copies the built mod into the game's Modules folder -->
+  <Target Name="DeployModule" AfterTargets="Build">
+    <Copy SourceFiles="$(ProjectDir)..\..\Module\SubModule.xml" DestinationFolder="$(ModuleOutput)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModuleOutput)\bin\Win64_Shipping_Client" />
+    <Copy SourceFiles="@(ModuleGuiFiles)" DestinationFiles="@(ModuleGuiFiles->'$(ModuleOutput)\GUI\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+
+</Project>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Module>
+  <Name value="Trophy Room"/>
+  <Id value="TrophyRoom"/>
+  <Version value="v0.1.0"/>
+  <DefaultModule value="false"/>
+  <ModuleCategory value="Singleplayer"/>
+  <ModuleType value="Community"/>
+  <SingleplayerModule value="true"/>
+  <MultiplayerModule value="false"/>
+  <DependedModules>
+    <DependedModule Id="Native" DependentVersion="v1.4.8" Optional="false"/>
+    <DependedModule Id="SandBoxCore" DependentVersion="v1.4.8" Optional="false"/>
+    <DependedModule Id="Sandbox" DependentVersion="v1.4.8" Optional="false"/>
+  </DependedModules>
+  <SubModules>
+    <SubModule>
+      <Name value="TrophyRoom"/>
+      <DLLName value="TrophyRoom.dll"/>
+      <SubModuleClassType value="TrophyRoom.SubModule"/>
+      <Tags>
+        <Tag key="DedicatedServerType" value="none"/>
+        <Tag key="IsNoRenderModeElement" value="false"/>
+      </Tags>
+    </SubModule>
+  </SubModules>
+  <Xmls/>
+</Module>
