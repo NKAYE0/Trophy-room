@@ -23,7 +23,7 @@
               <Children>
                 <ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="200" SuggestedHeight="116" HorizontalAlignment="Left" VerticalAlignment="Center" Brush="TrophyRoom.Card.Sound" IsSelected="@IsSelected" Command.Click="ExecuteSelect" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint">
                   <Children>
-                    <BrushWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="TrophyRoom.Card.Base" IsVisible="@HasItem" />
+                    <BrushWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="226" SuggestedHeight="124" HorizontalAlignment="Center" VerticalAlignment="Center" PositionXOffset="-11" Brush="TrophyRoom.Card.Base" IsVisible="@HasItem" />
                     <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="160" SuggestedHeight="80" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="@HasItem">
                       <Children>
                         <ImageIdentifierWidget DataSource="{ImageIdentifier}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" ImageId="@Id" AdditionalArgs="@AdditionalArgs" TextureProviderName="@TextureProviderName" />
@@ -58,7 +58,7 @@
               <Children>
                 <ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="200" SuggestedHeight="116" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="TrophyRoom.Card.Sound" IsSelected="@IsSelected" Command.Click="ExecuteSelect" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint">
                   <Children>
-                    <BrushWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="TrophyRoom.Card.Base" IsVisible="@HasItem" />
+                    <BrushWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="226" SuggestedHeight="124" HorizontalAlignment="Center" VerticalAlignment="Center" PositionXOffset="11" Brush="TrophyRoom.Card.Base" IsVisible="@HasItem" />
                     <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="160" SuggestedHeight="80" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="@HasItem">
                       <Children>
                         <ImageIdentifierWidget DataSource="{ImageIdentifier}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" ImageId="@Id" AdditionalArgs="@AdditionalArgs" TextureProviderName="@TextureProviderName" />

@@ -31,7 +31,8 @@ namespace TrophyRoom.UI
         private bool _canInscribeArmour;
         private float _hotkeyCooldown;
 
-        private const int MaxInscriptionLength = 60;
+        private const int MaxWeaponInscriptionLength = 60;
+        private const int MaxArmourInscriptionLength = 70;
         private const float HotkeyCooldownSeconds = 0.3f;
 
         public TrophyRoomVM(Settlement settlement, TrophyDisplay display, Action onClose)
@@ -204,7 +205,7 @@ namespace TrophyRoom.UI
 
             TextObject title = new TextObject("{=trophyroom_inscribe_title}Engrave {ITEM}");
             title.SetTextVariable("ITEM", slot.NameText);
-            ShowInscriptionPopup(title.ToString(), slot.Inscription, text =>
+            ShowInscriptionPopup(title.ToString(), slot.Inscription, MaxWeaponInscriptionLength, text =>
             {
                 _workingDisplay.WeaponInscriptions[slot.Index] = text;
                 slot.SetInscription(text);
@@ -220,7 +221,7 @@ namespace TrophyRoom.UI
             }
 
             string title = new TextObject("{=trophyroom_inscribe_armour_title}Engrave the armour set").ToString();
-            ShowInscriptionPopup(title, _workingDisplay.ArmourInscription, text =>
+            ShowInscriptionPopup(title, _workingDisplay.ArmourInscription, MaxArmourInscriptionLength, text =>
             {
                 _workingDisplay.ArmourInscription = text;
                 RefreshArmourInscription();
@@ -228,7 +229,7 @@ namespace TrophyRoom.UI
         }
 
         // Shows the game's text-entry popup; an empty entry removes the inscription.
-        private void ShowInscriptionPopup(string title, string currentText, Action<string> onConfirm)
+        private void ShowInscriptionPopup(string title, string currentText, int maxLength, Action<string> onConfirm)
         {
             InformationManager.HideTooltip();
             IsInscriptionPopupOpen = true;
@@ -250,17 +251,17 @@ namespace TrophyRoom.UI
                 },
                 OnInscriptionPopupClosed,
                 false,
-                ValidateInscription,
+                text => ValidateInscription(text, maxLength),
                 string.Empty,
                 currentText ?? string.Empty));
         }
 
-        private static Tuple<bool, string> ValidateInscription(string text)
+        private static Tuple<bool, string> ValidateInscription(string text, int maxLength)
         {
-            if (text != null && text.Length > MaxInscriptionLength)
+            if (text != null && text.Length > maxLength)
             {
                 TextObject error = new TextObject("{=trophyroom_inscribe_too_long}Inscriptions can be at most {MAX} characters.");
-                error.SetTextVariable("MAX", MaxInscriptionLength);
+                error.SetTextVariable("MAX", maxLength);
                 return new Tuple<bool, string>(false, error.ToString());
             }
             return new Tuple<bool, string>(true, string.Empty);
