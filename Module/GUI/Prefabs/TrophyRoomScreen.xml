@@ -17,24 +17,22 @@
         <CharacterTableauWidget DataSource="{Mannequin}" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="760" SuggestedHeight="760" HorizontalAlignment="Center" VerticalAlignment="Center" PositionYOffset="-90" BannerCodeText="@BannerCodeText" CharStringId="@CharStringId" EquipmentCode="@EquipmentCode" BodyProperties="@BodyProperties" IsFemale="@IsFemale" MountCreationKey="@MountCreationKey" StanceIndex="@StanceIndex" ArmorColor1="@ArmorColor1" ArmorColor2="@ArmorColor2" Race="@Race" IsEquipmentAnimActive="true" DoNotUseCustomScale="true" />
 
         <!-- Left weapon plaques: card on the left, engraved plate on the right -->
-        <ListPanel DataSource="{LeftWeapons}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" MarginLeft="50" PositionYOffset="-30" StackLayout.LayoutMethod="VerticalTopToBottom">
+        <ListPanel DataSource="{LeftWeapons}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" MarginLeft="30" PositionYOffset="-30" StackLayout.LayoutMethod="VerticalTopToBottom">
           <ItemTemplate>
-            <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="440" SuggestedHeight="134" MarginTop="5" MarginBottom="5">
+            <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="470" SuggestedHeight="134" MarginTop="5" MarginBottom="5">
               <Children>
-                <ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="166" SuggestedHeight="128" HorizontalAlignment="Left" VerticalAlignment="Center" Brush="TrophyRoom.Card.Sound" IsSelected="@IsSelected" Command.Click="ExecuteSelect" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint">
+                <ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="200" SuggestedHeight="116" HorizontalAlignment="Left" VerticalAlignment="Center" Brush="TrophyRoom.Card.Sound" IsSelected="@IsSelected" Command.Click="ExecuteSelect" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint">
                   <Children>
                     <BrushWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="TrophyRoom.Card.Base" IsVisible="@HasItem" />
-                    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="10" MarginRight="10" MarginTop="10" MarginBottom="10" Sprite="BlankWhiteSquare_9" Color="#00000066" IsHidden="@HasItem" />
-                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="140" SuggestedHeight="70" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="@HasItem">
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="160" SuggestedHeight="80" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="@HasItem">
                       <Children>
                         <ImageIdentifierWidget DataSource="{ImageIdentifier}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" ImageId="@Id" AdditionalArgs="@AdditionalArgs" TextureProviderName="@TextureProviderName" />
                       </Children>
                     </Widget>
-                    <BrushWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="116" SuggestedHeight="58" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="InventoryWeaponSlot" IsHidden="@HasItem" />
-                    <BrushWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="TrophyRoom.Card.Frame" />
+                    <BrushWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="200" SuggestedHeight="100" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="InventoryWeaponSlot" IsHidden="@HasItem" />
                   </Children>
                 </ButtonWidget>
-                <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="114" VerticalAlignment="Center" MarginLeft="176" Sprite="BlankWhiteSquare_9" Color="#0000008C">
+                <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="114" VerticalAlignment="Center" MarginLeft="212" Sprite="BlankWhiteSquare_9" Color="#0000008C">
                   <Children>
                     <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="2" VerticalAlignment="Bottom" Sprite="BlankWhiteSquare_9" Color="#C8A46A80" />
                     <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="42" VerticalAlignment="Top" MarginTop="8" MarginLeft="12" MarginRight="62" Brush="InventoryHeaderFontBrush" Brush.FontSize="16" Text="@NameText" IsVisible="@HasItem" />
@@ -54,24 +52,22 @@
         </ListPanel>
 
         <!-- Right weapon plaques: engraved plate on the left, card on the right -->
-        <ListPanel DataSource="{RightWeapons}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" MarginRight="50" PositionYOffset="-30" StackLayout.LayoutMethod="VerticalTopToBottom">
+        <ListPanel DataSource="{RightWeapons}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" MarginRight="30" PositionYOffset="-30" StackLayout.LayoutMethod="VerticalTopToBottom">
           <ItemTemplate>
-            <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="440" SuggestedHeight="134" MarginTop="5" MarginBottom="5">
+            <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="470" SuggestedHeight="134" MarginTop="5" MarginBottom="5">
               <Children>
-                <ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="166" SuggestedHeight="128" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="TrophyRoom.Card.Sound" IsSelected="@IsSelected" Command.Click="ExecuteSelect" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint">
+                <ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="200" SuggestedHeight="116" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="TrophyRoom.Card.Sound" IsSelected="@IsSelected" Command.Click="ExecuteSelect" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint">
                   <Children>
                     <BrushWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="TrophyRoom.Card.Base" IsVisible="@HasItem" />
-                    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="10" MarginRight="10" MarginTop="10" MarginBottom="10" Sprite="BlankWhiteSquare_9" Color="#00000066" IsHidden="@HasItem" />
-                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="140" SuggestedHeight="70" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="@HasItem">
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="160" SuggestedHeight="80" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="@HasItem">
                       <Children>
                         <ImageIdentifierWidget DataSource="{ImageIdentifier}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" ImageId="@Id" AdditionalArgs="@AdditionalArgs" TextureProviderName="@TextureProviderName" />
                       </Children>
                     </Widget>
-                    <BrushWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="116" SuggestedHeight="58" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="InventoryWeaponSlot" IsHidden="@HasItem" />
-                    <BrushWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="TrophyRoom.Card.Frame" />
+                    <BrushWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="200" SuggestedHeight="100" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="InventoryWeaponSlot" IsHidden="@HasItem" />
                   </Children>
                 </ButtonWidget>
-                <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="114" VerticalAlignment="Center" MarginRight="176" Sprite="BlankWhiteSquare_9" Color="#0000008C">
+                <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="114" VerticalAlignment="Center" MarginRight="212" Sprite="BlankWhiteSquare_9" Color="#0000008C">
                   <Children>
                     <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="2" VerticalAlignment="Bottom" Sprite="BlankWhiteSquare_9" Color="#C8A46A80" />
                     <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="42" VerticalAlignment="Top" MarginTop="8" MarginLeft="62" MarginRight="12" Brush="InventoryHeaderFontBrush" Brush.FontSize="16" Brush.TextHorizontalAlignment="Right" Text="@NameText" IsVisible="@HasItem" />
@@ -105,18 +101,17 @@
         <!-- Armour plaques under the mannequin -->
         <ListPanel DataSource="{ArmourSlots}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Bottom" MarginBottom="128" StackLayout.LayoutMethod="HorizontalLeftToRight">
           <ItemTemplate>
-            <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="176" SuggestedHeight="162" MarginLeft="3" MarginRight="3">
+            <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="176" SuggestedHeight="162" MarginLeft="2" MarginRight="2">
               <Children>
                 <ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="166" SuggestedHeight="128" HorizontalAlignment="Center" VerticalAlignment="Top" Brush="TrophyRoom.Card.Sound" IsSelected="@IsSelected" Command.Click="ExecuteSelect" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint">
                   <Children>
                     <BrushWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="TrophyRoom.Card.Base" IsVisible="@HasItem" />
-                    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="10" MarginRight="10" MarginTop="10" MarginBottom="10" Sprite="BlankWhiteSquare_9" Color="#00000066" IsHidden="@HasItem" />
                     <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="140" SuggestedHeight="70" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="@HasItem">
                       <Children>
                         <ImageIdentifierWidget DataSource="{ImageIdentifier}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" ImageId="@Id" AdditionalArgs="@AdditionalArgs" TextureProviderName="@TextureProviderName" />
                       </Children>
                     </Widget>
-                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="116" SuggestedHeight="58" HorizontalAlignment="Center" VerticalAlignment="Center" IsHidden="@HasItem">
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="166" SuggestedHeight="83" HorizontalAlignment="Center" VerticalAlignment="Center" IsHidden="@HasItem">
                       <Children>
                         <BrushWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="InventoryHelmetSlot" IsVisible="@IsHeadSlot" />
                         <BrushWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="InventoryCloakSlot" IsVisible="@IsCapeSlot" />
@@ -125,7 +120,6 @@
                         <BrushWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="InventoryBootSlot" IsVisible="@IsLegsSlot" />
                       </Children>
                     </Widget>
-                    <BrushWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="TrophyRoom.Card.Frame" />
                   </Children>
                 </ButtonWidget>
                 <ButtonWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="22" SuggestedHeight="22" HorizontalAlignment="Right" VerticalAlignment="Top" MarginTop="10" MarginRight="16" Brush="Popup.CloseButton" Command.Click="ExecuteClear" IsVisible="@HasItem" />

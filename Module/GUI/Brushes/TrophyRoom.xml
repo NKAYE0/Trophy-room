@@ -26,33 +26,6 @@
     </Styles>
   </Brush>
 
-  <!-- Card frame drawn over every slot (vanilla smithy card frame art), with hover/press/select looks. -->
-  <Brush Name="TrophyRoom.Card.Frame" TransitionDuration="0.07">
-    <Layers>
-      <BrushLayer Name="Default" Sprite="Crafting\crafting_card_frame_default" IsHidden="true" />
-      <BrushLayer Name="Hovered" Sprite="Crafting\crafting_card_frame_hovered" IsHidden="true" />
-      <BrushLayer Name="Pressed" Sprite="Crafting\crafting_card_frame_pressed" IsHidden="true" />
-      <BrushLayer Name="Selected" Sprite="Crafting\crafting_card_frame_selected" IsHidden="true" />
-    </Layers>
-    <Styles>
-      <Style Name="Default">
-        <BrushLayer Name="Default" IsHidden="false" />
-      </Style>
-      <Style Name="Hovered">
-        <BrushLayer Name="Hovered" IsHidden="false" />
-      </Style>
-      <Style Name="Pressed">
-        <BrushLayer Name="Pressed" IsHidden="false" />
-      </Style>
-      <Style Name="Selected">
-        <BrushLayer Name="Selected" IsHidden="false" ColorFactor="1.6" />
-      </Style>
-      <Style Name="Disabled">
-        <BrushLayer Name="Default" IsHidden="false" />
-      </Style>
-    </Styles>
-  </Brush>
-
   <!-- Click and hover sounds for the slot cards, matching the vanilla smithy cards. -->
   <Brush Name="TrophyRoom.Card.Sound">
     <Layers>
