@@ -19,6 +19,9 @@ namespace TrophyRoom.UI
         private string _slotLabel;
         private string _inscriptionText;
         private bool _hasInscription;
+        private bool _isEditMode;
+        private bool _showEditControls;
+        private bool _isSlotVisible;
 
         public TrophySlotVM(bool isArmour, int index, EquipmentIndex armourSlot, string slotLabel, Action<TrophySlotVM> onSelect, Action<TrophySlotVM> onClear, Action<TrophySlotVM> onInscribe)
         {
@@ -51,6 +54,20 @@ namespace TrophyRoom.UI
             HasItem = !element.IsEmpty;
             ImageIdentifier = element.IsEmpty ? null : new ItemImageIdentifierVM(element.Item);
             NameText = element.IsEmpty ? string.Empty : element.GetModifiedItemName().ToString();
+            RefreshVisibility();
+        }
+
+        // Switches between edit mode (controls and empty slots shown) and display mode (filled slots only).
+        public void SetEditMode(bool isEditMode)
+        {
+            IsEditMode = isEditMode;
+            RefreshVisibility();
+        }
+
+        private void RefreshVisibility()
+        {
+            ShowEditControls = IsEditMode && HasItem;
+            IsSlotVisible = IsEditMode || HasItem;
         }
 
         // Shows the given inscription under the item name.
@@ -193,6 +210,50 @@ namespace TrophyRoom.UI
                 {
                     _inscriptionText = value;
                     OnPropertyChangedWithValue(value, nameof(InscriptionText));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public bool IsEditMode
+        {
+            get => _isEditMode;
+            set
+            {
+                if (value != _isEditMode)
+                {
+                    _isEditMode = value;
+                    OnPropertyChangedWithValue(value, nameof(IsEditMode));
+                }
+            }
+        }
+
+        // Remove and engrave buttons: only in edit mode on filled slots.
+        [DataSourceProperty]
+        public bool ShowEditControls
+        {
+            get => _showEditControls;
+            set
+            {
+                if (value != _showEditControls)
+                {
+                    _showEditControls = value;
+                    OnPropertyChangedWithValue(value, nameof(ShowEditControls));
+                }
+            }
+        }
+
+        // Empty slots are hidden in display mode.
+        [DataSourceProperty]
+        public bool IsSlotVisible
+        {
+            get => _isSlotVisible;
+            set
+            {
+                if (value != _isSlotVisible)
+                {
+                    _isSlotVisible = value;
+                    OnPropertyChangedWithValue(value, nameof(IsSlotVisible));
                 }
             }
         }

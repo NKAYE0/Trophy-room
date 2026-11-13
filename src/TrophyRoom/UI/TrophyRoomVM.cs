@@ -30,6 +30,16 @@ namespace TrophyRoom.UI
         private bool _hasArmourInscription;
         private bool _canInscribeArmour;
         private float _hotkeyCooldown;
+        private bool _isEditMode;
+        private bool _showArmourInscriptionPlate;
+        private bool _showArmourInscriptionPrompt;
+        private bool _showArmourDisplay;
+        private string _doneText;
+        private string _toggleModeText;
+        private readonly string _saveText;
+        private readonly string _leaveText;
+        private readonly string _editText;
+        private readonly string _viewText;
 
         private const int MaxWeaponInscriptionLength = 60;
         private const int MaxArmourInscriptionLength = 70;
@@ -47,7 +57,10 @@ namespace TrophyRoom.UI
             TitleText = title.ToString();
             ClanBanner = new BannerImageIdentifierVM(Clan.PlayerClan?.Banner, nineGrid: true);
             AddArmourInscriptionText = new TextObject("{=trophyroom_add_armour_inscription}Inscribe this armour set").ToString();
-            DoneText = GameTexts.FindText("str_done").ToString();
+            _saveText = GameTexts.FindText("str_done").ToString();
+            _leaveText = new TextObject("{=trophyroom_leave}Leave").ToString();
+            _editText = new TextObject("{=trophyroom_edit_display}Edit Display").ToString();
+            _viewText = new TextObject("{=trophyroom_view_display}View Display").ToString();
             CancelText = GameTexts.FindText("str_cancel").ToString();
             EmptySlotText = new TextObject("{=trophyroom_empty_slot}Empty").ToString();
             NoCandidatesText = new TextObject("{=trophyroom_no_candidates}You have nothing that fits this slot.").ToString();
@@ -79,7 +92,58 @@ namespace TrophyRoom.UI
             }
 
             RefreshMannequin();
+
+            // Open in display mode when something is on show, otherwise straight into edit mode.
+            SetEditMode(!HasAnyItem());
+        }
+
+        private bool HasAnyItem()
+        {
+            if (HasAnyArmour())
+            {
+                return true;
+            }
+            foreach (EquipmentElement element in _workingDisplay.Weapons)
+            {
+                if (!element.IsEmpty)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Applies edit or display mode to the whole screen.
+        private void SetEditMode(bool isEditMode)
+        {
+            if (!isEditMode && IsPickerOpen)
+            {
+                ExecuteClosePicker();
+            }
+
+            IsEditMode = isEditMode;
+            foreach (TrophySlotVM slot in LeftWeapons)
+            {
+                slot.SetEditMode(isEditMode);
+            }
+            foreach (TrophySlotVM slot in RightWeapons)
+            {
+                slot.SetEditMode(isEditMode);
+            }
+            foreach (TrophySlotVM slot in ArmourSlots)
+            {
+                slot.SetEditMode(isEditMode);
+            }
+
+            DoneText = isEditMode ? _saveText : _leaveText;
+            ToggleModeText = isEditMode ? _viewText : _editText;
             RefreshArmourInscription();
+        }
+
+        public void ExecuteToggleEditMode()
+        {
+            InformationManager.HideTooltip();
+            SetEditMode(!IsEditMode);
         }
 
         private static string GetArmourLabel(EquipmentIndex index)
@@ -104,6 +168,11 @@ namespace TrophyRoom.UI
         // Opens the picker filled with items that fit the chosen slot.
         private void OnSlotSelected(TrophySlotVM slot)
         {
+            if (!IsEditMode)
+            {
+                return;
+            }
+
             if (_selectedSlot != null)
             {
                 _selectedSlot.IsSelected = false;
@@ -115,7 +184,7 @@ namespace TrophyRoom.UI
             Candidates.Clear();
             foreach (TrophyCandidate candidate in _allCandidates)
             {
-                if (slot.Accepts(candidate.Element.Item))
+                if (slot.Accepts(candidate.Element.Item) && !IsDisplayedElsewhere(candidate.Element, slot))
                 {
                     Candidates.Add(new TrophyCandidateVM(candidate, OnCandidateSelected));
                 }
@@ -126,6 +195,31 @@ namespace TrophyRoom.UI
             PickerTitleText = pickerTitle.ToString();
             HasNoCandidates = Candidates.Count == 0;
             IsPickerOpen = true;
+        }
+
+        // True if the same item (and quality) is already shown in a different slot, so it can't be added twice.
+        private bool IsDisplayedElsewhere(EquipmentElement element, TrophySlotVM targetSlot)
+        {
+            for (int i = 0; i < _workingDisplay.Weapons.Length; i++)
+            {
+                if ((targetSlot.IsArmour || targetSlot.Index != i) && IsSameItem(_workingDisplay.Weapons[i], element))
+                {
+                    return true;
+                }
+            }
+            for (int i = 0; i < _workingDisplay.Armour.Length; i++)
+            {
+                if ((!targetSlot.IsArmour || targetSlot.Index != i) && IsSameItem(_workingDisplay.Armour[i], element))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static bool IsSameItem(EquipmentElement a, EquipmentElement b)
+        {
+            return !a.IsEmpty && a.Item == b.Item && a.ItemModifier == b.ItemModifier;
         }
 
         // Places the chosen item into the selected slot.
@@ -142,6 +236,11 @@ namespace TrophyRoom.UI
 
         private void OnSlotCleared(TrophySlotVM slot)
         {
+            if (!IsEditMode)
+            {
+                return;
+            }
+
             InformationManager.HideTooltip();
             SetSlot(slot, EquipmentElement.Invalid);
         }
@@ -193,12 +292,19 @@ namespace TrophyRoom.UI
             CanInscribeArmour = HasAnyArmour();
             HasArmourInscription = inscription.Length > 0;
             ArmourInscriptionText = HasArmourInscription ? "“" + inscription + "”" : string.Empty;
+
+            // Display mode only shows the plate when there is an inscription to read.
+            ShowArmourInscriptionPlate = CanInscribeArmour && (IsEditMode || HasArmourInscription);
+            ShowArmourInscriptionPrompt = IsEditMode && !HasArmourInscription;
+
+            // In display mode the armour shelf only appears when armour is on show.
+            ShowArmourDisplay = IsEditMode || CanInscribeArmour;
         }
 
         // Opens the text popup to engrave a weapon's plaque.
         private void OnSlotInscribe(TrophySlotVM slot)
         {
-            if (slot.IsArmour || !slot.HasItem)
+            if (!IsEditMode || slot.IsArmour || !slot.HasItem)
             {
                 return;
             }
@@ -215,7 +321,7 @@ namespace TrophyRoom.UI
         // Opens the text popup to engrave the armour set's plaque.
         public void ExecuteInscribeArmour()
         {
-            if (!HasAnyArmour())
+            if (!IsEditMode || !HasAnyArmour())
             {
                 return;
             }
@@ -416,7 +522,88 @@ namespace TrophyRoom.UI
         public string TitleText { get; }
 
         [DataSourceProperty]
-        public string DoneText { get; }
+        public string DoneText
+        {
+            get => _doneText;
+            set
+            {
+                if (value != _doneText)
+                {
+                    _doneText = value;
+                    OnPropertyChangedWithValue(value, nameof(DoneText));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public string ToggleModeText
+        {
+            get => _toggleModeText;
+            set
+            {
+                if (value != _toggleModeText)
+                {
+                    _toggleModeText = value;
+                    OnPropertyChangedWithValue(value, nameof(ToggleModeText));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public bool IsEditMode
+        {
+            get => _isEditMode;
+            set
+            {
+                if (value != _isEditMode)
+                {
+                    _isEditMode = value;
+                    OnPropertyChangedWithValue(value, nameof(IsEditMode));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public bool ShowArmourInscriptionPlate
+        {
+            get => _showArmourInscriptionPlate;
+            set
+            {
+                if (value != _showArmourInscriptionPlate)
+                {
+                    _showArmourInscriptionPlate = value;
+                    OnPropertyChangedWithValue(value, nameof(ShowArmourInscriptionPlate));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public bool ShowArmourDisplay
+        {
+            get => _showArmourDisplay;
+            set
+            {
+                if (value != _showArmourDisplay)
+                {
+                    _showArmourDisplay = value;
+                    OnPropertyChangedWithValue(value, nameof(ShowArmourDisplay));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public bool ShowArmourInscriptionPrompt
+        {
+            get => _showArmourInscriptionPrompt;
+            set
+            {
+                if (value != _showArmourInscriptionPrompt)
+                {
+                    _showArmourInscriptionPrompt = value;
+                    OnPropertyChangedWithValue(value, nameof(ShowArmourInscriptionPrompt));
+                }
+            }
+        }
 
         [DataSourceProperty]
         public string CancelText { get; }

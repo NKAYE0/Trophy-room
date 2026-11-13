@@ -91,7 +91,8 @@ namespace TrophyRoom.UI
             _loadedCategories.Clear();
         }
 
-        // Esc closes the picker first, then the screen; Enter saves and closes. Ignored while the inscription popup is in use.
+        // Esc closes the picker first, then cancels (edit mode) or leaves (display mode); Enter saves and closes.
+        // Ignored while the inscription popup is in use.
         protected override void OnFrameTick(float dt)
         {
             base.OnFrameTick(dt);
@@ -112,9 +113,14 @@ namespace TrophyRoom.UI
                 {
                     _dataSource.ExecuteClosePicker();
                 }
-                else
+                else if (_dataSource.IsEditMode)
                 {
                     _dataSource.ExecuteCancel();
+                }
+                else
+                {
+                    // Display mode has nothing to discard, so Esc simply leaves (keeping any earlier edits).
+                    _dataSource.ExecuteDone();
                 }
             }
             else if (_layer.Input.IsHotKeyReleased("Confirm") && !_dataSource.IsPickerOpen)

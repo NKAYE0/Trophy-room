@@ -1,30 +1,4 @@
 <Brushes>
-  <!-- Red card base behind a displayed item (vanilla smithy card art), with hover/press/select looks. -->
-  <Brush Name="TrophyRoom.Card.Base" TransitionDuration="0.07">
-    <Layers>
-      <BrushLayer Name="Default" Sprite="Crafting\weapon_piece_card" IsHidden="true" />
-      <BrushLayer Name="Hovered" Sprite="Crafting\weapon_piece_card_hovered" IsHidden="true" />
-      <BrushLayer Name="Pressed" Sprite="Crafting\weapon_piece_card_pressed" IsHidden="true" />
-      <BrushLayer Name="Selected" Sprite="Crafting\weapon_piece_card_selected" IsHidden="true" />
-    </Layers>
-    <Styles>
-      <Style Name="Default">
-        <BrushLayer Name="Default" IsHidden="false" />
-      </Style>
-      <Style Name="Hovered">
-        <BrushLayer Name="Hovered" IsHidden="false" />
-      </Style>
-      <Style Name="Pressed">
-        <BrushLayer Name="Pressed" IsHidden="false" />
-      </Style>
-      <Style Name="Selected">
-        <BrushLayer Name="Selected" IsHidden="false" />
-      </Style>
-      <Style Name="Disabled">
-        <BrushLayer Name="Default" IsHidden="false" />
-      </Style>
-    </Styles>
-  </Brush>
 
   <!-- Click and hover sounds for the slot cards, matching the vanilla smithy cards. -->
   <Brush Name="TrophyRoom.Card.Sound">
@@ -42,5 +16,43 @@
         <EventSound EventName="HoverBegin" Audio="mini_popup" />
       </EventSounds>
     </SoundProperties>
+  </Brush>
+
+  <!-- Gold frame around each weapon name plate (vanilla clan/town popup gold frame). -->
+  <Brush Name="TrophyRoom.Plate.Frame">
+    <Layers>
+      <BrushLayer Name="Default" Sprite="gold_frame_9" ExtendLeft="6" ExtendTop="6" ExtendRight="6" ExtendBottom="7" />
+    </Layers>
+    <Styles>
+      <Style Name="Default">
+        <BrushLayer Name="Default" />
+      </Style>
+    </Styles>
+  </Brush>
+
+  <!-- Side panels: the shelf's gold-tinted tutorial frame, pushed out so its gold line sits on the visible outer edge of the Frame1 stone frame. -->
+  <Brush Name="TrophyRoom.Panel.Frame">
+    <Layers>
+      <BrushLayer Name="Frame" Sprite="tutorial_frame_9" Color="#CA9923FF" ExtendLeft="25" ExtendRight="26" ExtendTop="24" ExtendBottom="24" />
+    </Layers>
+    <Styles>
+      <Style Name="Default">
+        <BrushLayer Name="Frame" />
+      </Style>
+    </Styles>
+  </Brush>
+
+  <!-- Armour shelf: vanilla tutorial panel canvas with its matching gold-tinted frame (as the in-mission hint panel). -->
+  <Brush Name="TrophyRoom.Shelf">
+    <Layers>
+      <BrushLayer Name="Canvas" Sprite="tutorial_canvas_9" Color="#1C1511F2" />
+      <BrushLayer Name="Frame" Sprite="tutorial_frame_9" Color="#CA9923FF" ExtendLeft="16" ExtendRight="16" ExtendTop="13" ExtendBottom="14" />
+    </Layers>
+    <Styles>
+      <Style Name="Default">
+        <BrushLayer Name="Canvas" />
+        <BrushLayer Name="Frame" />
+      </Style>
+    </Styles>
   </Brush>
 </Brushes>
