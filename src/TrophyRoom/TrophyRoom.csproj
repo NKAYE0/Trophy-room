@@ -36,14 +36,11 @@
     <Reference Include="$(GameBin)\TaleWorlds.InputSystem.dll" Private="false" />
     <Reference Include="$(GameBin)\TaleWorlds.ScreenSystem.dll" Private="false" />
     <Reference Include="$(GameBin)\TaleWorlds.TwoDimension.dll" Private="false" />
-    <Reference Include="$(GameBin)\TaleWorlds.ModuleManager.dll" Private="false" />
-    <Reference Include="$(GameBin)\TaleWorlds.DotNet.dll" Private="false" />
     <Reference Include="$(GameFolder)\Modules\Native\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.View.dll" Private="false" />
   </ItemGroup>
 
   <ItemGroup>
     <ModuleGuiFiles Include="$(ProjectDir)..\..\Module\GUI\**\*.*" />
-    <ModuleAssetFiles Include="$(ProjectDir)..\..\Module\Assets\**\*.*" />
   </ItemGroup>
 
   <!-- Copies the built mod into the game's Modules folder -->
@@ -51,7 +48,6 @@
     <Copy SourceFiles="$(ProjectDir)..\..\Module\SubModule.xml" DestinationFolder="$(ModuleOutput)" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModuleOutput)\bin\Win64_Shipping_Client" />
     <Copy SourceFiles="@(ModuleGuiFiles)" DestinationFiles="@(ModuleGuiFiles->'$(ModuleOutput)\GUI\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="@(ModuleAssetFiles)" DestinationFiles="@(ModuleAssetFiles->'$(ModuleOutput)\Assets\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
 </Project>

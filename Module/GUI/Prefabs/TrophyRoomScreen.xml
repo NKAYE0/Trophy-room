@@ -8,15 +8,11 @@
         <!-- Framed side panels (same frames as the vanilla inventory side panels) -->
         <BrushWidget WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="540" HorizontalAlignment="Left" MarginTop="60" MarginBottom="120" Brush="Frame1Brush">
           <Children>
-            <!-- Custom woven border, hidden for now -->
-            <TextureWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" TextureProviderName="TrophyRoomPanelBorderTextureProvider" DoNotAcceptEvents="true" IsVisible="false" />
             <BrushWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="TrophyRoom.Panel.Frame" DoNotAcceptEvents="true" />
           </Children>
         </BrushWidget>
         <BrushWidget WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="540" HorizontalAlignment="Right" MarginTop="60" MarginBottom="120" Brush="Frame1Brush">
           <Children>
-            <!-- Custom woven border, hidden for now -->
-            <TextureWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" TextureProviderName="TrophyRoomPanelBorderTextureProvider" DoNotAcceptEvents="true" IsVisible="false" />
             <BrushWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="TrophyRoom.Panel.Frame" DoNotAcceptEvents="true" />
           </Children>
         </BrushWidget>
