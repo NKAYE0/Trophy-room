@@ -31,7 +31,7 @@
         </ListPanel>
 
         <!-- Armour mannequin -->
-        <CharacterTableauWidget DataSource="{Mannequin}" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="760" SuggestedHeight="760" HorizontalAlignment="Center" VerticalAlignment="Center" PositionYOffset="-100" BannerCodeText="@BannerCodeText" CharStringId="@CharStringId" EquipmentCode="@EquipmentCode" BodyProperties="@BodyProperties" IsFemale="@IsFemale" MountCreationKey="@MountCreationKey" StanceIndex="@StanceIndex" ArmorColor1="@ArmorColor1" ArmorColor2="@ArmorColor2" Race="@Race" IsEquipmentAnimActive="true" DoNotUseCustomScale="true" />
+        <CharacterTableauWidget DataSource="{Mannequin}" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="860" SuggestedHeight="860" HorizontalAlignment="Center" VerticalAlignment="Center" PositionYOffset="-106" BannerCodeText="@BannerCodeText" CharStringId="@CharStringId" EquipmentCode="@EquipmentCode" BodyProperties="@BodyProperties" IsFemale="@IsFemale" MountCreationKey="@MountCreationKey" StanceIndex="@StanceIndex" ArmorColor1="@ArmorColor1" ArmorColor2="@ArmorColor2" Race="@Race" IsEquipmentAnimActive="true" DoNotUseCustomScale="true" />
 
         <!-- Left weapon plaques: card on the left, stone name plate on the right -->
         <ListPanel DataSource="{LeftWeapons}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" MarginLeft="24" PositionYOffset="-20" StackLayout.LayoutMethod="VerticalTopToBottom">
