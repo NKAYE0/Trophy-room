@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TaleWorlds.Core;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.InputSystem;
@@ -12,10 +13,13 @@ namespace TrophyRoom.UI
     [GameStateScreen(typeof(TrophyRoomState))]
     public class TrophyRoomScreen : ScreenBase, IGameStateListener
     {
+        // Vanilla art used by the layout: inventory slots and silhouettes, smithy plaque cards, clan edit icon.
+        private static readonly string[] RequiredSpriteCategories = { "ui_inventory", "ui_crafting", "ui_clan" };
+
         private readonly TrophyRoomState _state;
+        private readonly List<SpriteCategory> _loadedCategories = new List<SpriteCategory>();
         private GauntletLayer _layer;
         private TrophyRoomVM _dataSource;
-        private SpriteCategory _inventoryCategory;
 
         public TrophyRoomScreen(TrophyRoomState state)
         {
@@ -26,11 +30,7 @@ namespace TrophyRoom.UI
         void IGameStateListener.OnActivate()
         {
             base.OnActivate();
-            SpriteCategory inventoryCategory = UIResourceManager.GetSpriteCategory("ui_inventory");
-            if (inventoryCategory != null && !inventoryCategory.IsLoaded)
-            {
-                _inventoryCategory = UIResourceManager.LoadSpriteCategory("ui_inventory");
-            }
+            LoadSpriteCategories();
 
             GameKeyContext panelKeys = HotKeyManager.GetCategory("GenericPanelGameKeyCategory");
             _dataSource = new TrophyRoomVM(_state.Settlement, _state.Display, CloseScreen);
@@ -54,9 +54,7 @@ namespace TrophyRoom.UI
                 ScreenManager.TryLoseFocus(_layer);
                 RemoveLayer(_layer);
             }
-            // Only unload the inventory sprites if this screen was the one that loaded them.
-            _inventoryCategory?.Unload();
-            _inventoryCategory = null;
+            UnloadSpriteCategories();
         }
 
         void IGameStateListener.OnInitialize()
@@ -70,11 +68,40 @@ namespace TrophyRoom.UI
             _layer = null;
         }
 
-        // Esc closes the picker first, then the screen; Enter saves and closes.
+        // Loads the art this screen needs, remembering only the categories it loaded itself.
+        private void LoadSpriteCategories()
+        {
+            foreach (string name in RequiredSpriteCategories)
+            {
+                SpriteCategory category = UIResourceManager.GetSpriteCategory(name);
+                if (category != null && !category.IsLoaded)
+                {
+                    _loadedCategories.Add(UIResourceManager.LoadSpriteCategory(name));
+                }
+            }
+        }
+
+        // Unloads only the art this screen loaded, so other screens are unaffected.
+        private void UnloadSpriteCategories()
+        {
+            foreach (SpriteCategory category in _loadedCategories)
+            {
+                category?.Unload();
+            }
+            _loadedCategories.Clear();
+        }
+
+        // Esc closes the picker first, then the screen; Enter saves and closes. Ignored while the inscription popup is in use.
         protected override void OnFrameTick(float dt)
         {
             base.OnFrameTick(dt);
             if (_layer == null || _dataSource == null)
+            {
+                return;
+            }
+
+            _dataSource.Tick(dt);
+            if (_dataSource.AreHotkeysBlocked)
             {
                 return;
             }

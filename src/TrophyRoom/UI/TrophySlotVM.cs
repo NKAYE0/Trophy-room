@@ -10,14 +10,17 @@ namespace TrophyRoom.UI
     {
         private readonly Action<TrophySlotVM> _onSelect;
         private readonly Action<TrophySlotVM> _onClear;
+        private readonly Action<TrophySlotVM> _onInscribe;
 
         private bool _hasItem;
         private bool _isSelected;
         private string _nameText;
         private ItemImageIdentifierVM _imageIdentifier;
         private string _slotLabel;
+        private string _inscriptionText;
+        private bool _hasInscription;
 
-        public TrophySlotVM(bool isArmour, int index, EquipmentIndex armourSlot, string slotLabel, Action<TrophySlotVM> onSelect, Action<TrophySlotVM> onClear)
+        public TrophySlotVM(bool isArmour, int index, EquipmentIndex armourSlot, string slotLabel, Action<TrophySlotVM> onSelect, Action<TrophySlotVM> onClear, Action<TrophySlotVM> onInscribe)
         {
             IsArmour = isArmour;
             Index = index;
@@ -25,7 +28,9 @@ namespace TrophyRoom.UI
             _slotLabel = slotLabel;
             _onSelect = onSelect;
             _onClear = onClear;
+            _onInscribe = onInscribe;
             _nameText = string.Empty;
+            _inscriptionText = string.Empty;
         }
 
         public bool IsArmour { get; }
@@ -36,6 +41,9 @@ namespace TrophyRoom.UI
 
         public EquipmentElement Element { get; private set; }
 
+        // Raw inscription text without decoration.
+        public string Inscription { get; private set; } = string.Empty;
+
         // Shows the given item in this slot (or empties it).
         public void SetElement(EquipmentElement element)
         {
@@ -43,6 +51,14 @@ namespace TrophyRoom.UI
             HasItem = !element.IsEmpty;
             ImageIdentifier = element.IsEmpty ? null : new ItemImageIdentifierVM(element.Item);
             NameText = element.IsEmpty ? string.Empty : element.GetModifiedItemName().ToString();
+        }
+
+        // Shows the given inscription under the item name.
+        public void SetInscription(string inscription)
+        {
+            Inscription = inscription ?? string.Empty;
+            HasInscription = Inscription.Length > 0;
+            InscriptionText = HasInscription ? "“" + Inscription + "”" : string.Empty;
         }
 
         // True if the item is allowed in this slot.
@@ -63,6 +79,11 @@ namespace TrophyRoom.UI
             _onClear?.Invoke(this);
         }
 
+        public void ExecuteInscribe()
+        {
+            _onInscribe?.Invoke(this);
+        }
+
         public void ExecuteBeginHint()
         {
             if (!Element.IsEmpty)
@@ -75,6 +96,22 @@ namespace TrophyRoom.UI
         {
             InformationManager.HideTooltip();
         }
+
+        // Which silhouette an empty armour slot shows.
+        [DataSourceProperty]
+        public bool IsHeadSlot => ArmourSlot == EquipmentIndex.Head;
+
+        [DataSourceProperty]
+        public bool IsCapeSlot => ArmourSlot == EquipmentIndex.Cape;
+
+        [DataSourceProperty]
+        public bool IsBodySlot => ArmourSlot == EquipmentIndex.Body;
+
+        [DataSourceProperty]
+        public bool IsGlovesSlot => ArmourSlot == EquipmentIndex.Gloves;
+
+        [DataSourceProperty]
+        public bool IsLegsSlot => ArmourSlot == EquipmentIndex.Leg;
 
         [DataSourceProperty]
         public ItemImageIdentifierVM ImageIdentifier
@@ -142,6 +179,34 @@ namespace TrophyRoom.UI
                 {
                     _slotLabel = value;
                     OnPropertyChangedWithValue(value, nameof(SlotLabel));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public string InscriptionText
+        {
+            get => _inscriptionText;
+            set
+            {
+                if (value != _inscriptionText)
+                {
+                    _inscriptionText = value;
+                    OnPropertyChangedWithValue(value, nameof(InscriptionText));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public bool HasInscription
+        {
+            get => _hasInscription;
+            set
+            {
+                if (value != _hasInscription)
+                {
+                    _hasInscription = value;
+                    OnPropertyChangedWithValue(value, nameof(HasInscription));
                 }
             }
         }

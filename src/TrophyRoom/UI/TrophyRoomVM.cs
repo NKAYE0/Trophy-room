@@ -5,6 +5,7 @@ using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Input;
 using TaleWorlds.Core;
 using TaleWorlds.Core.ViewModelCollection;
+using TaleWorlds.Core.ViewModelCollection.ImageIdentifiers;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
@@ -25,6 +26,13 @@ namespace TrophyRoom.UI
         private string _pickerTitleText;
         private InputKeyItemVM _doneInputKey;
         private InputKeyItemVM _cancelInputKey;
+        private string _armourInscriptionText = string.Empty;
+        private bool _hasArmourInscription;
+        private bool _canInscribeArmour;
+        private float _hotkeyCooldown;
+
+        private const int MaxInscriptionLength = 60;
+        private const float HotkeyCooldownSeconds = 0.3f;
 
         public TrophyRoomVM(Settlement settlement, TrophyDisplay display, Action onClose)
         {
@@ -33,9 +41,11 @@ namespace TrophyRoom.UI
             _onClose = onClose;
             _allCandidates = TrophyItemSources.Collect();
 
-            TextObject title = new TextObject("{=trophyroom_screen_title}Trophy Room of {SETTLEMENT}");
+            TextObject title = new TextObject("{=trophyroom_screen_title}Hall of Trophies — {SETTLEMENT}");
             title.SetTextVariable("SETTLEMENT", settlement?.Name ?? new TextObject(string.Empty));
             TitleText = title.ToString();
+            ClanBanner = new BannerImageIdentifierVM(Clan.PlayerClan?.Banner, nineGrid: true);
+            AddArmourInscriptionText = new TextObject("{=trophyroom_add_armour_inscription}Inscribe this armour set").ToString();
             DoneText = GameTexts.FindText("str_done").ToString();
             CancelText = GameTexts.FindText("str_cancel").ToString();
             EmptySlotText = new TextObject("{=trophyroom_empty_slot}Empty").ToString();
@@ -53,20 +63,22 @@ namespace TrophyRoom.UI
             string weaponLabel = new TextObject("{=trophyroom_slot_weapon}Weapon").ToString();
             for (int i = 0; i < TrophyDisplay.WeaponSlotCount; i++)
             {
-                TrophySlotVM slot = new TrophySlotVM(false, i, EquipmentIndex.None, weaponLabel, OnSlotSelected, OnSlotCleared);
+                TrophySlotVM slot = new TrophySlotVM(false, i, EquipmentIndex.None, weaponLabel, OnSlotSelected, OnSlotCleared, OnSlotInscribe);
                 slot.SetElement(_workingDisplay.Weapons[i]);
+                slot.SetInscription(_workingDisplay.WeaponInscriptions[i]);
                 (i < TrophyDisplay.WeaponSlotCount / 2 ? LeftWeapons : RightWeapons).Add(slot);
             }
 
             for (int i = 0; i < TrophyDisplay.ArmourSlots.Length; i++)
             {
                 EquipmentIndex index = TrophyDisplay.ArmourSlots[i];
-                TrophySlotVM slot = new TrophySlotVM(true, i, index, GetArmourLabel(index), OnSlotSelected, OnSlotCleared);
+                TrophySlotVM slot = new TrophySlotVM(true, i, index, GetArmourLabel(index), OnSlotSelected, OnSlotCleared, null);
                 slot.SetElement(_workingDisplay.Armour[i]);
                 ArmourSlots.Add(slot);
             }
 
             RefreshMannequin();
+            RefreshArmourInscription();
         }
 
         private static string GetArmourLabel(EquipmentIndex index)
@@ -76,7 +88,7 @@ namespace TrophyRoom.UI
                 case EquipmentIndex.Head:
                     return new TextObject("{=trophyroom_slot_head}Helmet").ToString();
                 case EquipmentIndex.Cape:
-                    return new TextObject("{=trophyroom_slot_cape}Cape").ToString();
+                    return new TextObject("{=trophyroom_slot_shoulders}Shoulders").ToString();
                 case EquipmentIndex.Body:
                     return new TextObject("{=trophyroom_slot_body}Body").ToString();
                 case EquipmentIndex.Gloves:
@@ -140,16 +152,137 @@ namespace TrophyRoom.UI
             {
                 _workingDisplay.Armour[slot.Index] = element;
                 RefreshMannequin();
+
+                // The set inscription is dropped once no armour is left on display.
+                if (!HasAnyArmour())
+                {
+                    _workingDisplay.ArmourInscription = string.Empty;
+                }
+                RefreshArmourInscription();
             }
             else
             {
+                // A new or removed weapon starts without an inscription.
                 _workingDisplay.Weapons[slot.Index] = element;
+                _workingDisplay.WeaponInscriptions[slot.Index] = string.Empty;
+                slot.SetInscription(string.Empty);
             }
         }
 
         private void RefreshMannequin()
         {
             Mannequin.SetEquipment(_workingDisplay.CreateMannequinEquipment());
+        }
+
+        private bool HasAnyArmour()
+        {
+            foreach (EquipmentElement element in _workingDisplay.Armour)
+            {
+                if (!element.IsEmpty)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void RefreshArmourInscription()
+        {
+            string inscription = _workingDisplay.ArmourInscription ?? string.Empty;
+            CanInscribeArmour = HasAnyArmour();
+            HasArmourInscription = inscription.Length > 0;
+            ArmourInscriptionText = HasArmourInscription ? "“" + inscription + "”" : string.Empty;
+        }
+
+        // Opens the text popup to engrave a weapon's plaque.
+        private void OnSlotInscribe(TrophySlotVM slot)
+        {
+            if (slot.IsArmour || !slot.HasItem)
+            {
+                return;
+            }
+
+            TextObject title = new TextObject("{=trophyroom_inscribe_title}Engrave {ITEM}");
+            title.SetTextVariable("ITEM", slot.NameText);
+            ShowInscriptionPopup(title.ToString(), slot.Inscription, text =>
+            {
+                _workingDisplay.WeaponInscriptions[slot.Index] = text;
+                slot.SetInscription(text);
+            });
+        }
+
+        // Opens the text popup to engrave the armour set's plaque.
+        public void ExecuteInscribeArmour()
+        {
+            if (!HasAnyArmour())
+            {
+                return;
+            }
+
+            string title = new TextObject("{=trophyroom_inscribe_armour_title}Engrave the armour set").ToString();
+            ShowInscriptionPopup(title, _workingDisplay.ArmourInscription, text =>
+            {
+                _workingDisplay.ArmourInscription = text;
+                RefreshArmourInscription();
+            });
+        }
+
+        // Shows the game's text-entry popup; an empty entry removes the inscription.
+        private void ShowInscriptionPopup(string title, string currentText, Action<string> onConfirm)
+        {
+            InformationManager.HideTooltip();
+            IsInscriptionPopupOpen = true;
+
+            string description = new TextObject("{=trophyroom_inscribe_desc}Write a short inscription for this plaque, or leave it empty to remove it.").ToString();
+            string confirmText = new TextObject("{=trophyroom_inscribe_confirm}Engrave").ToString();
+
+            InformationManager.ShowTextInquiry(new TextInquiryData(
+                title,
+                description,
+                true,
+                true,
+                confirmText,
+                CancelText,
+                text =>
+                {
+                    onConfirm((text ?? string.Empty).Trim());
+                    OnInscriptionPopupClosed();
+                },
+                OnInscriptionPopupClosed,
+                false,
+                ValidateInscription,
+                string.Empty,
+                currentText ?? string.Empty));
+        }
+
+        private static Tuple<bool, string> ValidateInscription(string text)
+        {
+            if (text != null && text.Length > MaxInscriptionLength)
+            {
+                TextObject error = new TextObject("{=trophyroom_inscribe_too_long}Inscriptions can be at most {MAX} characters.");
+                error.SetTextVariable("MAX", MaxInscriptionLength);
+                return new Tuple<bool, string>(false, error.ToString());
+            }
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        // Briefly ignores this screen's Enter/Esc keys so closing the popup doesn't also close the screen.
+        private void OnInscriptionPopupClosed()
+        {
+            IsInscriptionPopupOpen = false;
+            _hotkeyCooldown = HotkeyCooldownSeconds;
+        }
+
+        // True while this screen's keyboard shortcuts should be ignored.
+        public bool AreHotkeysBlocked => IsInscriptionPopupOpen || _hotkeyCooldown > 0f;
+
+        // Counts down the short key cooldown after the inscription popup closes.
+        public void Tick(float dt)
+        {
+            if (_hotkeyCooldown > 0f)
+            {
+                _hotkeyCooldown -= dt;
+            }
         }
 
         public void ExecuteClosePicker()
@@ -195,6 +328,7 @@ namespace TrophyRoom.UI
         {
             base.OnFinalize();
             Mannequin?.OnFinalize();
+            ClanBanner?.OnFinalize();
             DoneInputKey?.OnFinalize();
             CancelInputKey?.OnFinalize();
         }
@@ -223,6 +357,56 @@ namespace TrophyRoom.UI
                 {
                     _cancelInputKey = value;
                     OnPropertyChangedWithValue(value, nameof(CancelInputKey));
+                }
+            }
+        }
+
+        public bool IsInscriptionPopupOpen { get; private set; }
+
+        [DataSourceProperty]
+        public BannerImageIdentifierVM ClanBanner { get; }
+
+        [DataSourceProperty]
+        public string AddArmourInscriptionText { get; }
+
+        [DataSourceProperty]
+        public string ArmourInscriptionText
+        {
+            get => _armourInscriptionText;
+            set
+            {
+                if (value != _armourInscriptionText)
+                {
+                    _armourInscriptionText = value;
+                    OnPropertyChangedWithValue(value, nameof(ArmourInscriptionText));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public bool HasArmourInscription
+        {
+            get => _hasArmourInscription;
+            set
+            {
+                if (value != _hasArmourInscription)
+                {
+                    _hasArmourInscription = value;
+                    OnPropertyChangedWithValue(value, nameof(HasArmourInscription));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public bool CanInscribeArmour
+        {
+            get => _canInscribeArmour;
+            set
+            {
+                if (value != _canInscribeArmour)
+                {
+                    _canInscribeArmour = value;
+                    OnPropertyChangedWithValue(value, nameof(CanInscribeArmour));
                 }
             }
         }

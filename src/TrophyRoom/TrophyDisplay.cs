@@ -21,11 +21,29 @@ namespace TrophyRoom
 
         public EquipmentElement[] Weapons { get; } = new EquipmentElement[WeaponSlotCount];
 
-        // Copies every slot from another display.
+        // Player-written inscription shared by the whole armour set.
+        public string ArmourInscription { get; set; } = string.Empty;
+
+        // Player-written inscription for each weapon slot.
+        public string[] WeaponInscriptions { get; } = CreateEmptyInscriptions();
+
+        private static string[] CreateEmptyInscriptions()
+        {
+            string[] inscriptions = new string[WeaponSlotCount];
+            for (int i = 0; i < inscriptions.Length; i++)
+            {
+                inscriptions[i] = string.Empty;
+            }
+            return inscriptions;
+        }
+
+        // Copies every slot and inscription from another display.
         public void CopyFrom(TrophyDisplay other)
         {
             other.Armour.CopyTo(Armour, 0);
             other.Weapons.CopyTo(Weapons, 0);
+            other.WeaponInscriptions.CopyTo(WeaponInscriptions, 0);
+            ArmourInscription = other.ArmourInscription;
         }
 
         // Builds an equipment set containing only the displayed armour, for the mannequin.

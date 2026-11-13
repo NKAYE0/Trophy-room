@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 using TaleWorlds.Core;
 using TaleWorlds.ObjectSystem;
 
@@ -11,6 +13,7 @@ namespace TrophyRoom
         private const char Separator = '|';
         private const string ArmourPrefix = "A";
         private const string WeaponPrefix = "W";
+        private const string InscriptionPrefix = "N";
 
         private readonly Dictionary<string, TrophyDisplay> _displays = new Dictionary<string, TrophyDisplay>();
 
@@ -36,7 +39,8 @@ namespace TrophyRoom
             _unresolvedEntries.RemoveAll(entry => entry.StartsWith(prefix));
         }
 
-        // Converts all displays to text lines in the form: settlementId|slot|itemId|modifierId.
+        // Converts all displays to text lines.
+        // Items: settlementId|A0 or W0|itemId|modifierId. Inscriptions: settlementId|NA or NW0|base64 text|.
         public List<string> Serialize()
         {
             List<string> entries = new List<string>(_unresolvedEntries);
@@ -45,9 +49,63 @@ namespace TrophyRoom
             {
                 AddEntries(entries, pair.Key, ArmourPrefix, pair.Value.Armour);
                 AddEntries(entries, pair.Key, WeaponPrefix, pair.Value.Weapons);
+                AddInscription(entries, pair.Key, InscriptionPrefix + ArmourPrefix, pair.Value.ArmourInscription);
+
+                for (int i = 0; i < pair.Value.WeaponInscriptions.Length; i++)
+                {
+                    AddInscription(entries, pair.Key, InscriptionPrefix + WeaponPrefix + i.ToString(CultureInfo.InvariantCulture), pair.Value.WeaponInscriptions[i]);
+                }
             }
 
             return entries;
+        }
+
+        // Inscriptions are Base64-encoded so any characters the player types are stored safely.
+        private static void AddInscription(List<string> entries, string settlementId, string slot, string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return;
+            }
+
+            string encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(text));
+            entries.Add(string.Join(Separator.ToString(), settlementId, slot, encoded, string.Empty));
+        }
+
+        private static string DecodeInscription(string encoded)
+        {
+            try
+            {
+                return Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
+            }
+            catch (FormatException)
+            {
+                return string.Empty;
+            }
+        }
+
+        // Applies a saved inscription entry (slot "NA" or "NW0".."NW9") to its display.
+        private void ApplyInscription(string settlementId, string slot, string encoded)
+        {
+            string text = DecodeInscription(encoded);
+            if (string.IsNullOrEmpty(text))
+            {
+                return;
+            }
+
+            TrophyDisplay display = GetOrCreate(settlementId);
+            string target = slot.Substring(InscriptionPrefix.Length);
+
+            if (target == ArmourPrefix)
+            {
+                display.ArmourInscription = text;
+            }
+            else if (target.StartsWith(WeaponPrefix)
+                && int.TryParse(target.Substring(WeaponPrefix.Length), NumberStyles.Integer, CultureInfo.InvariantCulture, out int index)
+                && index >= 0 && index < display.WeaponInscriptions.Length)
+            {
+                display.WeaponInscriptions[index] = text;
+            }
         }
 
         private static void AddEntries(List<string> entries, string settlementId, string prefix, EquipmentElement[] slots)
@@ -87,6 +145,12 @@ namespace TrophyRoom
                 string[] parts = entry.Split(Separator);
                 if (parts.Length != 4 || parts[1].Length < 2)
                 {
+                    continue;
+                }
+
+                if (parts[1].StartsWith(InscriptionPrefix))
+                {
+                    ApplyInscription(parts[0], parts[1], parts[2]);
                     continue;
                 }
 
