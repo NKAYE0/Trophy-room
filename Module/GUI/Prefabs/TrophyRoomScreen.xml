@@ -31,7 +31,7 @@
         </ListPanel>
 
         <!-- Armour mannequin -->
-        <CharacterTableauWidget DataSource="{Mannequin}" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="860" SuggestedHeight="860" HorizontalAlignment="Center" VerticalAlignment="Center" PositionYOffset="-106" BannerCodeText="@BannerCodeText" CharStringId="@CharStringId" EquipmentCode="@EquipmentCode" BodyProperties="@BodyProperties" IsFemale="@IsFemale" MountCreationKey="@MountCreationKey" StanceIndex="@StanceIndex" ArmorColor1="@ArmorColor1" ArmorColor2="@ArmorColor2" Race="@Race" IsEquipmentAnimActive="true" DoNotUseCustomScale="true" />
+        <CharacterTableauWidget DataSource="{Mannequin}" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="860" SuggestedHeight="860" HorizontalAlignment="Center" VerticalAlignment="Center" PositionYOffset="-106" BannerCodeText="@BannerCodeText" CharStringId="@CharStringId" EquipmentCode="@EquipmentCode" BodyProperties="@BodyProperties" IsFemale="@IsFemale" MountCreationKey="@MountCreationKey" StanceIndex="@StanceIndex" ArmorColor1="@ArmorColor1" ArmorColor2="@ArmorColor2" Race="@Race" IdleAction="@IdleAction" RightHandWieldedEquipmentIndex="@RightHandWieldedEquipmentIndex" LeftHandWieldedEquipmentIndex="@LeftHandWieldedEquipmentIndex" IsEquipmentAnimActive="true" DoNotUseCustomScale="true" />
 
         <!-- Left weapon plaques: card on the left, stone name plate on the right -->
         <ListPanel DataSource="{LeftWeapons}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" MarginLeft="24" PositionYOffset="-20" StackLayout.LayoutMethod="VerticalTopToBottom">
@@ -56,9 +56,10 @@
                 <BrushWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="116" VerticalAlignment="Center" MarginLeft="228" Brush="Panel.Dent" IsVisible="@IsSlotVisible">
                   <Children>
                     <BrushWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="TrophyRoom.Plate.Frame" />
-                    <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="42" VerticalAlignment="Top" MarginTop="12" MarginLeft="18" MarginRight="66" Brush="InventoryHeaderFontBrush" Brush.FontSize="16" Text="@NameText" IsVisible="@HasItem" />
+                    <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="42" VerticalAlignment="Top" MarginTop="12" MarginLeft="18" MarginRight="94" Brush="InventoryHeaderFontBrush" Brush.FontSize="16" Text="@NameText" IsVisible="@HasItem" />
                     <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="52" VerticalAlignment="Top" MarginTop="54" MarginLeft="18" MarginRight="16" Brush="InventoryDefaultFontBrush" Brush.FontSize="15" Brush.FontColor="#EFC78DFF" Text="@InscriptionText" IsVisible="@HasInscription" />
                     <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="16" MarginRight="16" Brush="InventoryDefaultFontBrush" Brush.FontSize="18" Brush.AlphaFactor="0.5" Brush.TextHorizontalAlignment="Center" Text="@SlotLabel" IsHidden="@HasItem" />
+                    <ButtonWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="26" SuggestedHeight="26" HorizontalAlignment="Right" VerticalAlignment="Top" MarginTop="12" MarginRight="66" Brush="Encyclopedia.Bookmark.Button" IsSelected="@IsFeatured" Command.Click="ExecuteToggleFeatured" IsVisible="@ShowFeatureToggle" />
                     <ButtonWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="22" SuggestedHeight="28" HorizontalAlignment="Right" VerticalAlignment="Top" MarginTop="12" MarginRight="40" Brush="Standard.DropdownItem.SoundBrush" Command.Click="ExecuteInscribe" IsVisible="@ShowEditControls">
                       <Children>
                         <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="Clan\edit_name_icon" />
@@ -95,10 +96,11 @@
                 <BrushWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="116" VerticalAlignment="Center" MarginRight="228" Brush="Panel.Dent" IsVisible="@IsSlotVisible">
                   <Children>
                     <BrushWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="TrophyRoom.Plate.Frame" />
-                    <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="42" VerticalAlignment="Top" MarginTop="12" MarginLeft="66" MarginRight="18" Brush="InventoryHeaderFontBrush" Brush.FontSize="16" Brush.TextHorizontalAlignment="Right" Text="@NameText" IsVisible="@HasItem" />
+                    <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="42" VerticalAlignment="Top" MarginTop="12" MarginLeft="94" MarginRight="18" Brush="InventoryHeaderFontBrush" Brush.FontSize="16" Brush.TextHorizontalAlignment="Right" Text="@NameText" IsVisible="@HasItem" />
                     <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="52" VerticalAlignment="Top" MarginTop="54" MarginLeft="16" MarginRight="18" Brush="InventoryDefaultFontBrush" Brush.FontSize="15" Brush.FontColor="#EFC78DFF" Brush.TextHorizontalAlignment="Right" Text="@InscriptionText" IsVisible="@HasInscription" />
                     <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="16" MarginRight="16" Brush="InventoryDefaultFontBrush" Brush.FontSize="18" Brush.AlphaFactor="0.5" Brush.TextHorizontalAlignment="Center" Text="@SlotLabel" IsHidden="@HasItem" />
                     <ButtonWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="24" SuggestedHeight="24" HorizontalAlignment="Left" VerticalAlignment="Top" MarginTop="13" MarginLeft="12" Brush="Popup.CloseButton" Command.Click="ExecuteClear" IsVisible="@ShowEditControls" />
+                    <ButtonWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="26" SuggestedHeight="26" HorizontalAlignment="Left" VerticalAlignment="Top" MarginTop="12" MarginLeft="66" Brush="Encyclopedia.Bookmark.Button" IsSelected="@IsFeatured" Command.Click="ExecuteToggleFeatured" IsVisible="@ShowFeatureToggle" />
                     <ButtonWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="22" SuggestedHeight="28" HorizontalAlignment="Left" VerticalAlignment="Top" MarginTop="12" MarginLeft="40" Brush="Standard.DropdownItem.SoundBrush" Command.Click="ExecuteInscribe" IsVisible="@ShowEditControls">
                       <Children>
                         <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="Clan\edit_name_icon" />
@@ -166,6 +168,19 @@
           </Children>
         </ButtonWidget>
 
+        <!-- Mannequin stance selector (edit mode), mirroring the mode toggle on the other side -->
+        <ListPanel WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Bottom" MarginBottom="27" PositionXOffset="560" StackLayout.LayoutMethod="HorizontalLeftToRight" IsVisible="@IsEditMode">
+          <Children>
+            <ButtonWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="37" SuggestedHeight="42" VerticalAlignment="Center" Brush="Inventory.Tabbard.PreviousCharacter" Command.Click="ExecutePreviousPose" />
+            <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="280" SuggestedHeight="42" VerticalAlignment="Center" MarginLeft="6" MarginRight="6" Sprite="BlankWhiteSquare_9" Color="#0000008C">
+              <Children>
+                <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="8" MarginRight="8" Brush="InventoryHeaderFontBrush" Brush.FontSize="19" Brush.TextHorizontalAlignment="Center" Text="@PoseText" />
+              </Children>
+            </Widget>
+            <ButtonWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="37" SuggestedHeight="42" VerticalAlignment="Center" Brush="Inventory.Tabbard.NextCharacter" Command.Click="ExecuteNextPose" />
+          </Children>
+        </ListPanel>
+
         <!-- Done / Cancel (edit mode) or Leave (display mode) -->
         <Standard.DialogCloseButtons Parameter.ShowCancel="@IsEditMode" Parameter.CancelButtonAction="ExecuteCancel" Parameter.CancelButtonText="@CancelText" Parameter.DoneButtonAction="ExecuteDone" Parameter.DoneButtonText="@DoneText" Parameter.DoneInputKeyDataSource="{DoneInputKey}" Parameter.CancelInputKeyDataSource="{CancelInputKey}" />
 
@@ -223,6 +238,25 @@
                 </Widget>
               </Children>
             </Widget>
+          </Children>
+        </Widget>
+
+        <!-- Inspect overlay: large rotating 3D view of a displayed item (display mode) -->
+        <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" IsVisible="@IsInspectOpen">
+          <Children>
+            <ButtonWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="Standard.DropdownItem.SoundBrush" Command.Click="ExecuteCloseInspect">
+              <Children>
+                <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="BlankWhiteSquare_9" Color="#000000C8" DoNotAcceptEvents="true" />
+              </Children>
+            </ButtonWidget>
+            <BrushWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="820" SuggestedHeight="860" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="TrophyRoom.Shelf">
+              <Children>
+                <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="50" VerticalAlignment="Top" MarginTop="22" MarginLeft="70" MarginRight="70" Brush="InventoryHeaderFontBrush" Brush.FontSize="30" Brush.TextHorizontalAlignment="Center" Text="@InspectNameText" />
+                <ButtonWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="36" SuggestedHeight="36" HorizontalAlignment="Right" VerticalAlignment="Top" MarginTop="22" MarginRight="22" Brush="Popup.CloseButton" Command.Click="ExecuteCloseInspect" />
+                <ItemTableauWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="760" SuggestedHeight="700" HorizontalAlignment="Center" VerticalAlignment="Top" MarginTop="84" StringId="@InspectStringId" ItemModifierId="@InspectItemModifierId" />
+                <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="30" VerticalAlignment="Bottom" MarginBottom="22" Brush="InventoryDefaultFontBrush" Brush.FontSize="17" Brush.AlphaFactor="0.6" Brush.TextHorizontalAlignment="Center" Text="@InspectHintText" />
+              </Children>
+            </BrushWidget>
           </Children>
         </Widget>
 

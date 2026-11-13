@@ -9,9 +9,9 @@
   <SingleplayerModule value="true"/>
   <MultiplayerModule value="false"/>
   <DependedModules>
-    <DependedModule Id="Native" DependentVersion="v1.4.8" Optional="false"/>
-    <DependedModule Id="SandBoxCore" DependentVersion="v1.4.8" Optional="false"/>
-    <DependedModule Id="Sandbox" DependentVersion="v1.4.8" Optional="false"/>
+    <DependedModule Id="Native" Optional="false"/>
+    <DependedModule Id="SandBoxCore" Optional="false"/>
+    <DependedModule Id="Sandbox" Optional="false"/>
   </DependedModules>
   <SubModules>
     <SubModule>

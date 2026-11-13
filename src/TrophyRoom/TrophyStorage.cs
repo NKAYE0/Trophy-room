@@ -14,6 +14,8 @@ namespace TrophyRoom
         private const string ArmourPrefix = "A";
         private const string WeaponPrefix = "W";
         private const string InscriptionPrefix = "N";
+        private const string FeaturedTag = "FW";
+        private const string PoseTag = "PS";
 
         private readonly Dictionary<string, TrophyDisplay> _displays = new Dictionary<string, TrophyDisplay>();
 
@@ -41,6 +43,7 @@ namespace TrophyRoom
 
         // Converts all displays to text lines.
         // Items: settlementId|A0 or W0|itemId|modifierId. Inscriptions: settlementId|NA or NW0|base64 text|.
+        // Featured weapon: settlementId|FW|weapon slot index|. Mannequin stance: settlementId|PS|animation id|.
         public List<string> Serialize()
         {
             List<string> entries = new List<string>(_unresolvedEntries);
@@ -54,6 +57,16 @@ namespace TrophyRoom
                 for (int i = 0; i < pair.Value.WeaponInscriptions.Length; i++)
                 {
                     AddInscription(entries, pair.Key, InscriptionPrefix + WeaponPrefix + i.ToString(CultureInfo.InvariantCulture), pair.Value.WeaponInscriptions[i]);
+                }
+
+                if (!string.IsNullOrEmpty(pair.Value.Pose))
+                {
+                    entries.Add(string.Join(Separator.ToString(), pair.Key, PoseTag, pair.Value.Pose, string.Empty));
+                }
+
+                if (pair.Value.FeaturedWeaponIndex != TrophyDisplay.NoFeaturedWeapon)
+                {
+                    entries.Add(string.Join(Separator.ToString(), pair.Key, FeaturedTag, pair.Value.FeaturedWeaponIndex.ToString(CultureInfo.InvariantCulture), string.Empty));
                 }
             }
 
@@ -145,6 +158,25 @@ namespace TrophyRoom
                 string[] parts = entry.Split(Separator);
                 if (parts.Length != 4 || parts[1].Length < 2)
                 {
+                    continue;
+                }
+
+                if (parts[1] == PoseTag)
+                {
+                    if (TrophyPoses.IndexOf(parts[2]) > 0)
+                    {
+                        GetOrCreate(parts[0]).Pose = parts[2];
+                    }
+                    continue;
+                }
+
+                if (parts[1] == FeaturedTag)
+                {
+                    if (int.TryParse(parts[2], NumberStyles.Integer, CultureInfo.InvariantCulture, out int featured)
+                        && featured >= 0 && featured < TrophyDisplay.WeaponSlotCount)
+                    {
+                        GetOrCreate(parts[0]).FeaturedWeaponIndex = featured;
+                    }
                     continue;
                 }
 

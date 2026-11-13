@@ -13,8 +13,8 @@ namespace TrophyRoom.UI
     [GameStateScreen(typeof(TrophyRoomState))]
     public class TrophyRoomScreen : ScreenBase, IGameStateListener
     {
-        // Vanilla art used by the layout: inventory slots and silhouettes, smithy plaque cards, clan edit icon.
-        private static readonly string[] RequiredSpriteCategories = { "ui_inventory", "ui_crafting", "ui_clan" };
+        // Vanilla art used by the layout: inventory slots and silhouettes, smithy art, clan edit icon, encyclopedia star.
+        private static readonly string[] RequiredSpriteCategories = { "ui_inventory", "ui_crafting", "ui_clan", "ui_encyclopedia" };
 
         private readonly TrophyRoomState _state;
         private readonly List<SpriteCategory> _loadedCategories = new List<SpriteCategory>();
@@ -109,7 +109,11 @@ namespace TrophyRoom.UI
 
             if (_layer.Input.IsHotKeyReleased("Exit"))
             {
-                if (_dataSource.IsPickerOpen)
+                if (_dataSource.IsInspectOpen)
+                {
+                    _dataSource.ExecuteCloseInspect();
+                }
+                else if (_dataSource.IsPickerOpen)
                 {
                     _dataSource.ExecuteClosePicker();
                 }
@@ -123,7 +127,7 @@ namespace TrophyRoom.UI
                     _dataSource.ExecuteDone();
                 }
             }
-            else if (_layer.Input.IsHotKeyReleased("Confirm") && !_dataSource.IsPickerOpen)
+            else if (_layer.Input.IsHotKeyReleased("Confirm") && !_dataSource.IsPickerOpen && !_dataSource.IsInspectOpen)
             {
                 _dataSource.ExecuteDone();
             }

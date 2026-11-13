@@ -11,6 +11,7 @@ namespace TrophyRoom.UI
         private readonly Action<TrophySlotVM> _onSelect;
         private readonly Action<TrophySlotVM> _onClear;
         private readonly Action<TrophySlotVM> _onInscribe;
+        private readonly Action<TrophySlotVM> _onToggleFeatured;
 
         private bool _hasItem;
         private bool _isSelected;
@@ -22,8 +23,10 @@ namespace TrophyRoom.UI
         private bool _isEditMode;
         private bool _showEditControls;
         private bool _isSlotVisible;
+        private bool _isFeatured;
+        private bool _showFeatureToggle;
 
-        public TrophySlotVM(bool isArmour, int index, EquipmentIndex armourSlot, string slotLabel, Action<TrophySlotVM> onSelect, Action<TrophySlotVM> onClear, Action<TrophySlotVM> onInscribe)
+        public TrophySlotVM(bool isArmour, int index, EquipmentIndex armourSlot, string slotLabel, Action<TrophySlotVM> onSelect, Action<TrophySlotVM> onClear, Action<TrophySlotVM> onInscribe, Action<TrophySlotVM> onToggleFeatured)
         {
             IsArmour = isArmour;
             Index = index;
@@ -32,6 +35,7 @@ namespace TrophyRoom.UI
             _onSelect = onSelect;
             _onClear = onClear;
             _onInscribe = onInscribe;
+            _onToggleFeatured = onToggleFeatured;
             _nameText = string.Empty;
             _inscriptionText = string.Empty;
         }
@@ -67,6 +71,7 @@ namespace TrophyRoom.UI
         private void RefreshVisibility()
         {
             ShowEditControls = IsEditMode && HasItem;
+            ShowFeatureToggle = ShowEditControls && _onToggleFeatured != null;
             IsSlotVisible = IsEditMode || HasItem;
         }
 
@@ -94,6 +99,11 @@ namespace TrophyRoom.UI
         public void ExecuteClear()
         {
             _onClear?.Invoke(this);
+        }
+
+        public void ExecuteToggleFeatured()
+        {
+            _onToggleFeatured?.Invoke(this);
         }
 
         public void ExecuteInscribe()
@@ -210,6 +220,36 @@ namespace TrophyRoom.UI
                 {
                     _inscriptionText = value;
                     OnPropertyChangedWithValue(value, nameof(InscriptionText));
+                }
+            }
+        }
+
+        // True for the weapon the mannequin holds.
+        [DataSourceProperty]
+        public bool IsFeatured
+        {
+            get => _isFeatured;
+            set
+            {
+                if (value != _isFeatured)
+                {
+                    _isFeatured = value;
+                    OnPropertyChangedWithValue(value, nameof(IsFeatured));
+                }
+            }
+        }
+
+        // Featured-weapon star: only on filled weapon slots in edit mode.
+        [DataSourceProperty]
+        public bool ShowFeatureToggle
+        {
+            get => _showFeatureToggle;
+            set
+            {
+                if (value != _showFeatureToggle)
+                {
+                    _showFeatureToggle = value;
+                    OnPropertyChangedWithValue(value, nameof(ShowFeatureToggle));
                 }
             }
         }

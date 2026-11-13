@@ -24,6 +24,11 @@ namespace TrophyRoom.UI
         private bool _isPickerOpen;
         private bool _hasNoCandidates;
         private string _pickerTitleText;
+        private string _poseText = string.Empty;
+        private bool _isInspectOpen;
+        private string _inspectStringId = string.Empty;
+        private string _inspectItemModifierId = string.Empty;
+        private string _inspectNameText = string.Empty;
         private InputKeyItemVM _doneInputKey;
         private InputKeyItemVM _cancelInputKey;
         private string _armourInscriptionText = string.Empty;
@@ -65,6 +70,7 @@ namespace TrophyRoom.UI
             EmptySlotText = new TextObject("{=trophyroom_empty_slot}Empty").ToString();
             NoCandidatesText = new TextObject("{=trophyroom_no_candidates}You have nothing that fits this slot.").ToString();
             _pickerTitleText = string.Empty;
+            InspectHintText = new TextObject("{=trophyroom_inspect_hint}Drag to rotate, scroll to zoom").ToString();
 
             Mannequin = new CharacterViewModel(CharacterViewModel.StanceTypes.None);
             Mannequin.FillFrom(CharacterObject.PlayerCharacter);
@@ -77,21 +83,23 @@ namespace TrophyRoom.UI
             string weaponLabel = new TextObject("{=trophyroom_slot_weapon}Weapon").ToString();
             for (int i = 0; i < TrophyDisplay.WeaponSlotCount; i++)
             {
-                TrophySlotVM slot = new TrophySlotVM(false, i, EquipmentIndex.None, weaponLabel, OnSlotSelected, OnSlotCleared, OnSlotInscribe);
+                TrophySlotVM slot = new TrophySlotVM(false, i, EquipmentIndex.None, weaponLabel, OnSlotSelected, OnSlotCleared, OnSlotInscribe, OnSlotToggleFeatured);
                 slot.SetElement(_workingDisplay.Weapons[i]);
                 slot.SetInscription(_workingDisplay.WeaponInscriptions[i]);
+                slot.IsFeatured = i == _workingDisplay.FeaturedWeaponIndex;
                 (i < TrophyDisplay.WeaponSlotCount / 2 ? LeftWeapons : RightWeapons).Add(slot);
             }
 
             for (int i = 0; i < TrophyDisplay.ArmourSlots.Length; i++)
             {
                 EquipmentIndex index = TrophyDisplay.ArmourSlots[i];
-                TrophySlotVM slot = new TrophySlotVM(true, i, index, GetArmourLabel(index), OnSlotSelected, OnSlotCleared, null);
+                TrophySlotVM slot = new TrophySlotVM(true, i, index, GetArmourLabel(index), OnSlotSelected, OnSlotCleared, null, null);
                 slot.SetElement(_workingDisplay.Armour[i]);
                 ArmourSlots.Add(slot);
             }
 
             RefreshMannequin();
+            RefreshPoseText();
 
             // Open in display mode when something is on show, otherwise straight into edit mode.
             SetEditMode(!HasAnyItem());
@@ -119,6 +127,10 @@ namespace TrophyRoom.UI
             if (!isEditMode && IsPickerOpen)
             {
                 ExecuteClosePicker();
+            }
+            if (IsInspectOpen)
+            {
+                ExecuteCloseInspect();
             }
 
             IsEditMode = isEditMode;
@@ -170,6 +182,10 @@ namespace TrophyRoom.UI
         {
             if (!IsEditMode)
             {
+                if (slot.HasItem)
+                {
+                    OpenInspect(slot.Element);
+                }
                 return;
             }
 
@@ -266,12 +282,112 @@ namespace TrophyRoom.UI
                 _workingDisplay.Weapons[slot.Index] = element;
                 _workingDisplay.WeaponInscriptions[slot.Index] = string.Empty;
                 slot.SetInscription(string.Empty);
+
+                if (_workingDisplay.FeaturedWeaponIndex == slot.Index)
+                {
+                    if (element.IsEmpty)
+                    {
+                        _workingDisplay.FeaturedWeaponIndex = TrophyDisplay.NoFeaturedWeapon;
+                        slot.IsFeatured = false;
+                    }
+                    RefreshMannequin();
+                }
             }
         }
 
         private void RefreshMannequin()
         {
+            Mannequin.IdleAction = _workingDisplay.Pose ?? TrophyPoses.GetAutomatic(_workingDisplay.FeaturedWeapon.Item);
             Mannequin.SetEquipment(_workingDisplay.CreateMannequinEquipment());
+
+            // Reset first so the hand is re-applied after the preview rebuilds the model.
+            Mannequin.RightHandWieldedEquipmentIndex = -1;
+            Mannequin.LeftHandWieldedEquipmentIndex = -1;
+
+            ItemObject featured = _workingDisplay.FeaturedWeapon.Item;
+            if (featured != null)
+            {
+                int slotIndex = (int)TrophyDisplay.FeaturedWeaponSlot;
+                bool leftHand = featured.ItemType == ItemObject.ItemTypeEnum.Bow || featured.ItemType == ItemObject.ItemTypeEnum.Shield;
+                if (leftHand)
+                {
+                    Mannequin.LeftHandWieldedEquipmentIndex = slotIndex;
+                }
+                else
+                {
+                    Mannequin.RightHandWieldedEquipmentIndex = slotIndex;
+                }
+            }
+        }
+
+        public void ExecutePreviousPose()
+        {
+            ChangePose(-1);
+        }
+
+        public void ExecuteNextPose()
+        {
+            ChangePose(1);
+        }
+
+        // Steps through the stance list (wrapping round) and updates the mannequin.
+        private void ChangePose(int step)
+        {
+            if (!IsEditMode)
+            {
+                return;
+            }
+
+            int count = TrophyPoses.All.Count;
+            int index = (TrophyPoses.IndexOf(_workingDisplay.Pose) + step + count) % count;
+            _workingDisplay.Pose = TrophyPoses.All[index].ActionId;
+            RefreshPoseText();
+            RefreshMannequin();
+        }
+
+        private void RefreshPoseText()
+        {
+            TextObject text = new TextObject("{=trophyroom_pose_label}Stance: {POSE}");
+            text.SetTextVariable("POSE", TrophyPoses.All[TrophyPoses.IndexOf(_workingDisplay.Pose)].Name);
+            PoseText = text.ToString();
+        }
+
+        // Stars or un-stars a weapon as the one the mannequin holds (only one at a time).
+        private void OnSlotToggleFeatured(TrophySlotVM slot)
+        {
+            if (!IsEditMode || slot.IsArmour || !slot.HasItem)
+            {
+                return;
+            }
+
+            _workingDisplay.FeaturedWeaponIndex = _workingDisplay.FeaturedWeaponIndex == slot.Index ? TrophyDisplay.NoFeaturedWeapon : slot.Index;
+            foreach (TrophySlotVM weaponSlot in LeftWeapons)
+            {
+                weaponSlot.IsFeatured = weaponSlot.Index == _workingDisplay.FeaturedWeaponIndex;
+            }
+            foreach (TrophySlotVM weaponSlot in RightWeapons)
+            {
+                weaponSlot.IsFeatured = weaponSlot.Index == _workingDisplay.FeaturedWeaponIndex;
+            }
+            RefreshMannequin();
+        }
+
+        // Opens the large rotating 3D view of a displayed item.
+        private void OpenInspect(EquipmentElement element)
+        {
+            InformationManager.HideTooltip();
+            InspectNameText = element.GetModifiedItemName().ToString();
+            InspectItemModifierId = element.ItemModifier?.StringId ?? string.Empty;
+            InspectStringId = element.Item.StringId;
+            IsInspectOpen = true;
+        }
+
+        // Closes the 3D view and clears the item so the viewer stops rendering.
+        public void ExecuteCloseInspect()
+        {
+            IsInspectOpen = false;
+            InspectStringId = string.Empty;
+            InspectItemModifierId = string.Empty;
         }
 
         private bool HasAnyArmour()
@@ -514,6 +630,79 @@ namespace TrophyRoom.UI
                 {
                     _canInscribeArmour = value;
                     OnPropertyChangedWithValue(value, nameof(CanInscribeArmour));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public bool IsInspectOpen
+        {
+            get => _isInspectOpen;
+            set
+            {
+                if (value != _isInspectOpen)
+                {
+                    _isInspectOpen = value;
+                    OnPropertyChangedWithValue(value, nameof(IsInspectOpen));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public string InspectStringId
+        {
+            get => _inspectStringId;
+            set
+            {
+                if (value != _inspectStringId)
+                {
+                    _inspectStringId = value;
+                    OnPropertyChangedWithValue(value, nameof(InspectStringId));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public string InspectItemModifierId
+        {
+            get => _inspectItemModifierId;
+            set
+            {
+                if (value != _inspectItemModifierId)
+                {
+                    _inspectItemModifierId = value;
+                    OnPropertyChangedWithValue(value, nameof(InspectItemModifierId));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public string InspectNameText
+        {
+            get => _inspectNameText;
+            set
+            {
+                if (value != _inspectNameText)
+                {
+                    _inspectNameText = value;
+                    OnPropertyChangedWithValue(value, nameof(InspectNameText));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public string InspectHintText { get; }
+
+        [DataSourceProperty]
+        public string PoseText
+        {
+            get => _poseText;
+            set
+            {
+                if (value != _poseText)
+                {
+                    _poseText = value;
+                    OnPropertyChangedWithValue(value, nameof(PoseText));
                 }
             }
         }
