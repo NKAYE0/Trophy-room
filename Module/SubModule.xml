@@ -2,7 +2,7 @@
 <Module>
   <Name value="Trophy Room"/>
   <Id value="TrophyRoom"/>
-  <Version value="v1.0.0"/>
+  <Version value="v1.0.1"/>
   <DefaultModule value="false"/>
   <ModuleCategory value="Singleplayer"/>
   <ModuleType value="Community"/>

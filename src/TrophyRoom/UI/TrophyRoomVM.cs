@@ -35,6 +35,9 @@ namespace TrophyRoom.UI
         private bool _hasArmourInscription;
         private bool _canInscribeArmour;
         private float _hotkeyCooldown;
+        private float _timeSinceOpen;
+        private int _heldWeaponReapplyIndex;
+        private static readonly float[] HeldWeaponReapplyTimes = { 0.25f, 0.75f, 1.5f, 3f };
         private bool _isEditMode;
         private bool _showArmourInscriptionPlate;
         private bool _showArmourInscriptionPrompt;
@@ -299,7 +302,12 @@ namespace TrophyRoom.UI
         {
             Mannequin.IdleAction = _workingDisplay.Pose ?? TrophyPoses.GetAutomatic(_workingDisplay.FeaturedWeapon.Item);
             Mannequin.SetEquipment(_workingDisplay.CreateMannequinEquipment());
+            ApplyHeldWeapon();
+        }
 
+        // Puts the featured weapon in the mannequin's hand (bows and shields left, everything else right).
+        private void ApplyHeldWeapon()
+        {
             // Reset first so the hand is re-applied after the preview rebuilds the model.
             Mannequin.RightHandWieldedEquipmentIndex = -1;
             Mannequin.LeftHandWieldedEquipmentIndex = -1;
@@ -505,6 +513,18 @@ namespace TrophyRoom.UI
             if (_hotkeyCooldown > 0f)
             {
                 _hotkeyCooldown -= dt;
+            }
+
+            // The held weapon set while the screen opens is lost if the character model is still loading,
+            // so re-apply it a few times during the first seconds.
+            if (_heldWeaponReapplyIndex < HeldWeaponReapplyTimes.Length)
+            {
+                _timeSinceOpen += dt;
+                if (_timeSinceOpen >= HeldWeaponReapplyTimes[_heldWeaponReapplyIndex])
+                {
+                    _heldWeaponReapplyIndex++;
+                    ApplyHeldWeapon();
+                }
             }
         }
 
